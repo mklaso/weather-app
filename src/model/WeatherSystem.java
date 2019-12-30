@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import com.google.gson.reflect.*;
@@ -76,6 +78,39 @@ public class WeatherSystem {
 		}
 	}
 	
+//	public String getMinTemp(String s) {
+//		
+//	}
+//	
+//	public String getMaxTemp(String s) {
+//		
+//	}
+//	
+//	public String getHumidity(String s) {
+//		
+//	}
+//	
+//	public String getCurrentTemp(String s) {
+//		
+//	}
+//	
+//	public String getFeelsLikeTemp(String s) {
+//		
+//	}
+//	
+//	public String getWindConditions(String s) {
+//		
+//	}
+//	
+//	public String getWeatherStatus(String s) {
+//		
+//	}
+//	
+	public static String formatTime(Date dateObject) {
+	    SimpleDateFormat timeFormat = new SimpleDateFormat("h:mm a");
+	    return timeFormat.format(dateObject);
+	 }
+	
 	// get rid of main method once mvc architecture is setup properly
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) {
@@ -103,10 +138,25 @@ public class WeatherSystem {
 			ArrayList<Map<String, Object>> weather = (ArrayList<Map<String, Object>>)respMap.get("weather");
 			Map<String, Object> weatherStatus = (Map<String, Object>)weather.get(0);
 			
+			System.out.println(result);
 			System.out.println("Weather stats for " + location + " are:");
 			System.out.println("Current Temp: " + mainMap.get("temp") + "°C");
 			System.out.println("Current Weather: " + weatherStatus.get("main")
 					+ " - " + weatherStatus.get("description"));
+			
+			Map<String, Object> sun = (Map<String, Object>)respMap.get("sys");
+			//System.out.println("Sunrise at: " + formatTime(new Date((long) sun.get("sunrise"))));
+			
+			Date date = new Date(1577633066);
+			int time = 1577633066;
+			//int time = 1577638196;
+			//-18000
+			date.setTime((long)time*1000);
+			System.out.println(formatTime(date));
+			
+			// ^ this displays the time in UTC. (5hrs ahead of EST)
+			// need to add some sort of timezone conversion based on which timezone the country is in
+			
 			
 		} catch(IOException e) {
 			System.out.println(e.getMessage());
