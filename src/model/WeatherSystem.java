@@ -20,34 +20,39 @@ public class WeatherSystem {
 	
 	private static final String API_KEY = "3c5aee26050f4b4e3b83118e62088949";
 	private String location;
-	String urlString;
-	private String tempUnit = "";
-	private String data = "";
+	private String urlString;
 	private String result = "";
+	private String tempUnit = "°C"; //default
+	private String measurementType = "&units=metric"; //default
 	private Map<String, Object> responseMap;
 	private Map<String, Object> mainMap;
 	private Map<String, Object> sysMap;
 
+	//add documentation later
 	@SuppressWarnings("unchecked")
 	public WeatherSystem(String location) {
-		setLocation(location);
-		setUnitType("Metric"); //default
+		this.location = location;
+		this.setURLString();
 		this.obtainWeatherData();
 		this.responseMap = jsonToMap(this.result);
 		this.mainMap = (Map<String, Object>)responseMap.get("main");
 		this.sysMap = (Map<String, Object>)responseMap.get("sys");
 	}
 	
-	public void setUnitType(String unitType) {
+	public void setURLString() {
+		this.urlString = "http://api.openweathermap.org/data/2.5/weather?q=" 
+				+ this.location + "&APPID=" + API_KEY + measurementType;
+	}
+	
+	public void changeMeasurementSystem(String unitType) {
 		if (unitType.toLowerCase().equals("metric")) {
-			this.urlString = "http://api.openweathermap.org/data/2.5/weather?q=" 
-					+ this.location + "&APPID=" + API_KEY + "&units=metric";
+			this.measurementType = "&units=metric";
 			this.tempUnit = "°C";
-		} else if (unitType.equals("imperial")) {
-			this.urlString = "http://api.openweathermap.org/data/2.5/weather?q=" 
-					+ this.location + "&APPID=" + API_KEY + "&units=imperial";
+		} else if (unitType.toLowerCase().equals("imperial")) {
+			this.measurementType = "&units=imperial";
 			this.tempUnit = "°F";
 		}
+		this.resetWeatherData();
 	}
 	
 	public static Map<String, Object> jsonToMap(String str) {
@@ -79,16 +84,22 @@ public class WeatherSystem {
 	public void addToResult(String s) {
 		this.result += s;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public void resetWeatherData() {
+		this.result = "";
+		this.setURLString();
+		this.obtainWeatherData();
+		this.responseMap = jsonToMap(this.result);
+		this.mainMap = (Map<String, Object>)responseMap.get("main");
+		this.sysMap = (Map<String, Object>)responseMap.get("sys");
+	}
+	
 	public void setLocation(String s) {
 		this.location = s;
-	}
-	
-	public void resetWeatherData() {
-		this.data = "";
-	}
-	
-	public void printWeatherData() {
-		System.out.println(this.data);
+		this.measurementType = "&units=metric";
+		this.tempUnit = "°C";
+		this.resetWeatherData();
 	}
 	
 	public String getCityName() {
@@ -96,29 +107,29 @@ public class WeatherSystem {
 	}
 	
 	public String getCurrentTemp() {
-		return (String) this.mainMap.get("temp") + this.tempUnit;
+		return String.valueOf(this.mainMap.get("temp")) + this.tempUnit;
 	}
 	
 	public String getFeelsLikeTemp() {
-		return (String) this.mainMap.get("feels_like") + this.tempUnit;
+		return String.valueOf(this.mainMap.get("feels_like")) + this.tempUnit;
 	}
 	
 	public String getMinTemp() {
-		return (String) this.mainMap.get("temp_min") + this.tempUnit;
+		return String.valueOf(this.mainMap.get("temp_min")) + this.tempUnit;
 	}
 	
 	public String getMaxTemp() {
-		return (String) this.mainMap.get("temp_max") + this.tempUnit;
+		return String.valueOf(this.mainMap.get("temp_max")) + this.tempUnit;
 	}
 	
 	public String getHumidity() {
-		return (String) this.mainMap.get("humidity") + "%";
+		return String.valueOf(this.mainMap.get("humidity")) + "%";
 	}
 	
 	public String getWindConditions() {
 		@SuppressWarnings("unchecked")
 		Map<String, Object> wind = (Map<String, Object>)responseMap.get("wind");
-		return (String) wind.get("speed") + "m/s";
+		return String.valueOf(wind.get("speed")) + "m/s";
 	}
 	
 	public String getWeatherStatus() {
@@ -128,23 +139,25 @@ public class WeatherSystem {
 		return (String) weatherStatus.get("description");	
 	}
 	
-	public int getTimezoneOffset() {
-		int timeOffset = Integer.parseInt((String) this.responseMap.get("timezone"));
+	public double getTimezoneOffset() {
+		double timeOffset = (double)(this.responseMap.get("timezone"));
 		return timeOffset;
 	}
 	
 	public String convertTime(String s) {
+		int offset = (int)(this.getTimezoneOffset());
+		
 		if (s.equals("sunrise") || s.equals("sunset")) {
-			double d = (double) sysMap.get(s);
-			long l = (long) d;
-			long time = l + this.getTimezoneOffset();
+			long l = (long)((double)sysMap.get(s));
+			long time = l + offset;
 			return formatTime(new Date(time * 1000));
 		} else {
 			long current = Instant.now().getEpochSecond();
-			long time = current + this.getTimezoneOffset();
+			long time = current + offset;
 			return formatTime(new Date(time * 1000));
 		}
 	}
+	
 	public String getSunriseTime() {
 		return this.convertTime("sunrise");
 	}
@@ -163,22 +176,38 @@ public class WeatherSystem {
 	    return timeFormat.format(dateObject);
 	 }
 	
+	public void printWeatherData() {
+		System.out.println("=========================================");
+		System.out.println("Local time in " + this.getCityName() + " is: " + this.getLocalTime());
+		System.out.println("Here are the stats for " + this.location + ".\n");
+		System.out.println("Current temperature: " + this.getCurrentTemp());
+		System.out.println("It feels like: " + this.getFeelsLikeTemp());
+		System.out.println("Min temperature: " + this.getMinTemp());
+		System.out.println("Max temperature: " + this.getMaxTemp() + "\n");
+		System.out.println("Humidity of: " + this.getHumidity());
+		System.out.println("Wind speeds of: " + this.getWindConditions());
+		System.out.println("Current weather conditions: " + this.getWeatherStatus() + "\n");
+		System.out.println("Sunrise at: " + this.getSunriseTime());
+		System.out.println("Sunset at: " + this.getSunsetTime());
+		System.out.println("=========================================");
+	}
+	
 	// get rid of main method once mvc architecture is setup properly
 	public static void main(String[] args) {
 		
-		WeatherSystem ws = new WeatherSystem("Oakville,CA");
+		WeatherSystem ws1 = new WeatherSystem("Oakville, CA");
+		WeatherSystem ws2 = new WeatherSystem("San Francisco, US");
 		
-		System.out.println("Local time in " + ws.getCityName() + "is: " + ws.getLocalTime());
-		System.out.println("Here are the stats for " + ws.getCityName() + "\n");
-		System.out.println("Current temperature: " + ws.getCurrentTemp());
-		System.out.println("It feels like: " + ws.getFeelsLikeTemp());
-		System.out.println("Min temperature: " + ws.getMinTemp());
-		System.out.println("Max temperature: " + ws.getMaxTemp());
-		System.out.println("The humidity is at: " + ws.getHumidity());
-		System.out.println("Wind speeds of: " + ws.getWindConditions());
-		System.out.println("Weather conditions currently: " + ws.getWeatherStatus());
-		System.out.println("Sunrise at: " + ws.getSunriseTime());
-		System.out.println("Sunset at: " + ws.getSunsetTime());
+		ws1.printWeatherData();
+		System.out.println();
+		ws2.printWeatherData();
+		System.out.println();
+		ws2.setLocation("Skopje, MK");
+		ws2.printWeatherData();
+		ws2.changeMeasurementSystem("imperial");
+		ws2.printWeatherData();
+		ws2.changeMeasurementSystem("METRIC");
+		ws2.printWeatherData();
 		
 	}
 }
