@@ -10,14 +10,15 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
-
 import com.google.gson.reflect.*;
 import com.google.gson.Gson;
 
 public class WeatherSystem {
 	
+	//darksky api = "1cd7dd4a37265e80ff955fc5021019d5";
 	private static final String API_KEY = "3c5aee26050f4b4e3b83118e62088949";
 	private String location;
 	private String urlString;
@@ -60,6 +61,42 @@ public class WeatherSystem {
 				str, new TypeToken<HashMap<String, Object>>() {}.getType());
 		
 		return map;
+	}
+	
+	public void get5DayForecast() {
+		
+		this.result = "";
+		this.urlString = "http://api.openweathermap.org/data/2.5/forecast?q=Oakville,CA&APPID=3c5aee26050f4b4e3b83118e62088949&units=metric";
+		String line;
+
+		try {
+			URL url = new URL(this.urlString);
+			URLConnection con = url.openConnection();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+			
+			while ((line = reader.readLine()) != null ) {
+				this.addToResult(line);
+			}
+			
+			reader.close();
+			
+			this.responseMap = jsonToMap(this.result);
+			
+			//this grabs all the dt results over the 5day forecast
+			//need to now check if the last part is 12:00:00
+			//could use a regex here -> i.e [xxxx-xx-xx 12:00:00], then if it matches the regex, parse the 
+			// min_temp, max_temp and temp results into an arraylist.
+			ArrayList<Map<String, Object>> weather = (ArrayList<Map<String, Object>>)responseMap.get("list");
+			Map<String, Object> weatherStatus = (Map<String, Object>)weather.get(0);
+			for(int i = 0; i < weather.size(); i++) {
+				Map<String, Object> m = weather.get(i);
+				System.out.println(m.get("dt_txt"));
+			}
+			
+			
+		} catch(IOException e) {
+			System.out.println(e.getMessage());
+		}
 	}
 	
 	public void obtainWeatherData() {
@@ -194,20 +231,24 @@ public class WeatherSystem {
 	
 	// get rid of main method once mvc architecture is setup properly
 	public static void main(String[] args) {
-		
+
 		WeatherSystem ws1 = new WeatherSystem("Oakville, CA");
 		WeatherSystem ws2 = new WeatherSystem("San Francisco, US");
 		
-		ws1.printWeatherData();
-		System.out.println();
-		ws2.printWeatherData();
-		System.out.println();
-		ws2.setLocation("Skopje, MK");
-		ws2.printWeatherData();
-		ws2.changeMeasurementSystem("imperial");
-		ws2.printWeatherData();
-		ws2.changeMeasurementSystem("METRIC");
-		ws2.printWeatherData();
+		ws1.get5DayForecast();
+		
+//		ws1.printWeatherData();
+//		System.out.println();
+//		ws2.printWeatherData();
+//		System.out.println();
+//		ws2.setLocation("Skopje, MK");
+//		ws2.printWeatherData();
+//		ws2.changeMeasurementSystem("imperial");
+//		ws2.printWeatherData();
+//		ws2.changeMeasurementSystem("METRIC");
+//		ws2.printWeatherData();
+		
+		
 		
 	}
 }
