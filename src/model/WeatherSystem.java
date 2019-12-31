@@ -30,6 +30,9 @@ public class WeatherSystem {
 	private Map<String, Object> responseMap;
 	private Map<String, Object> mainMap;
 	private Map<String, Object> sysMap;
+	public HashMap<String, ArrayList<String>> forecastData
+			= new HashMap<String, ArrayList<String>>();
+
 
 	//add documentation later
 	@SuppressWarnings("unchecked")
@@ -65,6 +68,7 @@ public class WeatherSystem {
 		return map;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void get5DayForecast() {
 		
 		this.result = "";
@@ -72,27 +76,77 @@ public class WeatherSystem {
 		
 		this.obtainWeatherData();
 			
-			this.responseMap = jsonToMap(this.result);
-			
-			Pattern midDay = Pattern.compile("^20(19|20|21|22)-(0[1-9]|1[0-2])-"
-					+ "(0[1-9]|1[0-9]|2[0-9]|3[0-1]) 12:00:00$");
-			Matcher m;
-			
-			
-			ArrayList<Map<String, Object>> forecastData = (ArrayList<Map<String, Object>>)responseMap.get("list");
+		this.responseMap = jsonToMap(this.result);
+		
+		Pattern midDay = Pattern.compile("^20(19|20|21|22)-(0[1-9]|1[0-2])-"
+				+ "(0[1-9]|1[0-9]|2[0-9]|3[0-1]) 12:00:00$");
+		Matcher m;
+		
+		//holds all forecast data over 5 day/3hr periods
+		ArrayList<Map<String, Object>> forecastData = (ArrayList<Map<String, Object>>)responseMap.get("list");
+		//to get timezone
+		Map<String, Object> city = (Map<String, Object>)responseMap.get("city");
+		
 
-			for(int i = 0; i < forecastData.size(); i++) {
-				Map<String, Object> currentObject = forecastData.get(i);
-				String checkThis = (String) currentObject.get("dt_txt");
-				m = midDay.matcher(checkThis);
+		for(int i = 0; i < forecastData.size(); i++) {
+			Map<String, Object> currentObject = forecastData.get(i);
+			String checkThis = (String) currentObject.get("dt_txt");
+			m = midDay.matcher(checkThis);
+			
+			if (m.matches()) {
+				Map<String, Object> main = (Map<String, Object>)currentObject.get("main");
+				String temp = getCurrentTemp(main);
+				String weatherCondition = getWeatherStatus(currentObject);
 				
-				if (m.matches()) {
-					System.out.println("It's a match." + " Line #" + i);
-					System.out.println(checkThis);
-				}
-
+				//getting and setting up the days according to the parsed unix timestamp
+				int offset = (int)getTimezoneOffset(city);
+				long l = (long)((double)currentObject.get("dt"));
+				long time = l + offset;
+				
+				//day of the week for the specific timestamp
+				String day = getDayOfTheWeek(time);
+				
+				//setting up weather data in an arraylist for each day
+				ArrayList<String> conditions = new ArrayList<String>();
+				conditions.add(temp);
+				conditions.add(weatherCondition);
+				
+				//key: temp of that day, value: weather data of the day
+				this.forecastData.put(day, conditions);
+				
+				temp = this.forecastData.get(day).get(0);
+				weatherCondition = this.forecastData.get(day).get(1);
+				
+				//System.out.println(this.forecastData.)
+				System.out.println(checkThis);
+				System.out.println("Day of the Week: " + day);
+				System.out.println("Temperature for the day: " + temp);
+				System.out.println("Weather conditions for the day: " + weatherCondition);
+				System.out.println("=============================================");
 			}
 		}
+	}
+	
+	public String getDayOfTheWeek(long unixTimestamp) {
+		double timeValue = (Math.floor(unixTimestamp / 86400) + 4) % 7;
+		
+		if (timeValue == 1.0) {
+			return "Monday";
+		} else if (timeValue == 2.0) {
+			return "Tuesday";
+		} else if (timeValue == 3.0) {
+			return "Wednesday";
+		} else if (timeValue == 4.0) {
+			return "Thursday";
+		} else if (timeValue == 5.0) {
+			return "Friday";
+		} else if (timeValue == 6.0) {
+			return "Saturday";
+		} else if (timeValue == 0.0) {
+			return "Sunday";
+		}
+		return "invalid";
+	}
 	
 	public void obtainWeatherData() {
 		String line;
@@ -134,24 +188,28 @@ public class WeatherSystem {
 		this.resetWeatherData();
 	}
 	
+	public String getTempType(Map<String, Object> map, String tempType) {
+		return String.valueOf(map.get(tempType)) + this.tempUnit;
+	}
+	
 	public String getCityName() {
 		return (String) this.responseMap.get("name");
 	}
 	
-	public String getCurrentTemp() {
-		return String.valueOf(this.mainMap.get("temp")) + this.tempUnit;
+	public String getCurrentTemp(Map<String, Object> map) {
+		return this.getTempType(map, "temp");
 	}
 	
-	public String getFeelsLikeTemp() {
-		return String.valueOf(this.mainMap.get("feels_like")) + this.tempUnit;
+	public String getFeelsLikeTemp(Map<String, Object> map) {
+		return this.getTempType(map, "feels_like");
 	}
 	
-	public String getMinTemp() {
-		return String.valueOf(this.mainMap.get("temp_min")) + this.tempUnit;
+	public String getMinTemp(Map<String, Object> map) {
+		return this.getTempType(map, "temp_min");
 	}
 	
-	public String getMaxTemp() {
-		return String.valueOf(this.mainMap.get("temp_max")) + this.tempUnit;
+	public String getMaxTemp(Map<String, Object> map) {
+		return this.getTempType(map, "temp_max");
 	}
 	
 	public String getHumidity() {
@@ -164,20 +222,20 @@ public class WeatherSystem {
 		return String.valueOf(wind.get("speed")) + "m/s";
 	}
 	
-	public String getWeatherStatus() {
+	public String getWeatherStatus(Map<String, Object> map) {
 		@SuppressWarnings("unchecked")
-		ArrayList<Map<String, Object>> weather = (ArrayList<Map<String, Object>>)responseMap.get("weather");
+		ArrayList<Map<String, Object>> weather = (ArrayList<Map<String, Object>>)map.get("weather");
 		Map<String, Object> weatherStatus = (Map<String, Object>)weather.get(0);
 		return (String) weatherStatus.get("description");	
 	}
 	
-	public double getTimezoneOffset() {
-		double timeOffset = (double)(this.responseMap.get("timezone"));
+	public double getTimezoneOffset(Map<String, Object> map) {
+		double timeOffset = (double)(map.get("timezone"));
 		return timeOffset;
 	}
 	
 	public String convertTime(String s) {
-		int offset = (int)(this.getTimezoneOffset());
+		int offset = (int)(this.getTimezoneOffset(this.responseMap));
 		
 		if (s.equals("sunrise") || s.equals("sunset")) {
 			long l = (long)((double)sysMap.get(s));
@@ -212,13 +270,13 @@ public class WeatherSystem {
 		System.out.println("=========================================");
 		System.out.println("Local time in " + this.getCityName() + " is: " + this.getLocalTime());
 		System.out.println("Here are the stats for " + this.location + ".\n");
-		System.out.println("Current temperature: " + this.getCurrentTemp());
-		System.out.println("It feels like: " + this.getFeelsLikeTemp());
-		System.out.println("Min temperature: " + this.getMinTemp());
-		System.out.println("Max temperature: " + this.getMaxTemp() + "\n");
+		System.out.println("Current temperature: " + this.getCurrentTemp(this.mainMap));
+		System.out.println("It feels like: " + this.getFeelsLikeTemp(this.mainMap));
+		System.out.println("Min temperature: " + this.getMinTemp(this.mainMap));
+		System.out.println("Max temperature: " + this.getMaxTemp(this.mainMap) + "\n");
 		System.out.println("Humidity of: " + this.getHumidity());
 		System.out.println("Wind speeds of: " + this.getWindConditions());
-		System.out.println("Current weather conditions: " + this.getWeatherStatus() + "\n");
+		System.out.println("Current weather conditions: " + this.getWeatherStatus(this.responseMap) + "\n");
 		System.out.println("Sunrise at: " + this.getSunriseTime());
 		System.out.println("Sunset at: " + this.getSunsetTime());
 		System.out.println("=========================================");
@@ -230,7 +288,7 @@ public class WeatherSystem {
 		WeatherSystem ws1 = new WeatherSystem("Oakville, CA");
 		WeatherSystem ws2 = new WeatherSystem("San Francisco, US");
 		
-		ws1.get5DayForecast();
+		ws2.get5DayForecast();
 		
 //		ws1.printWeatherData();
 //		System.out.println();
