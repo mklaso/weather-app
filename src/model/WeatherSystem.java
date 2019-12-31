@@ -20,7 +20,6 @@ import java.util.regex.Pattern;
 
 public class WeatherSystem {
 	
-	//darksky api = "1cd7dd4a37265e80ff955fc5021019d5";
 	private static final String API_KEY = "3c5aee26050f4b4e3b83118e62088949";
 	private String location;
 	private String urlString;
@@ -32,29 +31,37 @@ public class WeatherSystem {
 	private Map<String, Object> sysMap;
 	public HashMap<String, ArrayList<String>> forecastData
 			= new HashMap<String, ArrayList<String>>();
-
-
+	public static final String WEATHER_MODE = "weather";
+	public static final String FORECAST_MODE = "forecast";
+	public static final String METRIC_MODE = "metric";
+	public static final String IMPERIAL_MODE = "imperial";
+	
 	//add documentation later
 	@SuppressWarnings("unchecked")
 	public WeatherSystem(String location) {
 		this.location = location;
-		this.setURLString();
+		this.setURLString(WEATHER_MODE);
 		this.obtainWeatherData();
 		this.responseMap = jsonToMap(this.result);
 		this.mainMap = (Map<String, Object>)responseMap.get("main");
 		this.sysMap = (Map<String, Object>)responseMap.get("sys");
 	}
 	
-	public void setURLString() {
-		this.urlString = "http://api.openweathermap.org/data/2.5/weather?q=" 
+	public void setURLString(String type) {
+		if (type.equals(WEATHER_MODE)) {
+			this.urlString = "http://api.openweathermap.org/data/2.5/weather?q=" 
 				+ this.location + "&APPID=" + API_KEY + measurementType;
+		} else if (type.equals(FORECAST_MODE)) {
+			this.urlString = "http://api.openweathermap.org/data/2.5/forecast?q=" 
+				+ this.location + "&APPID=" + API_KEY + measurementType;
+		}
 	}
 	
 	public void changeMeasurementSystem(String unitType) {
-		if (unitType.toLowerCase().equals("metric")) {
+		if (unitType.toLowerCase().equals(METRIC_MODE)) {
 			this.measurementType = "&units=metric";
 			this.tempUnit = "°C";
-		} else if (unitType.toLowerCase().equals("imperial")) {
+		} else if (unitType.toLowerCase().equals(IMPERIAL_MODE)) {
 			this.measurementType = "&units=imperial";
 			this.tempUnit = "°F";
 		}
@@ -72,7 +79,7 @@ public class WeatherSystem {
 	public void get5DayForecast() {
 		
 		this.result = "";
-		this.urlString = "http://api.openweathermap.org/data/2.5/forecast?q=Oakville,CA&APPID=3c5aee26050f4b4e3b83118e62088949&units=metric";
+		setURLString(FORECAST_MODE);
 		
 		this.obtainWeatherData();
 			
@@ -87,7 +94,7 @@ public class WeatherSystem {
 		//to get timezone
 		Map<String, Object> city = (Map<String, Object>)responseMap.get("city");
 		
-
+		System.out.println("Here is the 5 day forecast for " + this.location + ".\n");
 		for(int i = 0; i < forecastData.size(); i++) {
 			Map<String, Object> currentObject = forecastData.get(i);
 			String checkThis = (String) currentObject.get("dt_txt");
@@ -117,7 +124,6 @@ public class WeatherSystem {
 				temp = this.forecastData.get(day).get(0);
 				weatherCondition = this.forecastData.get(day).get(1);
 				
-				//System.out.println(this.forecastData.)
 				System.out.println(checkThis);
 				System.out.println("Day of the Week: " + day);
 				System.out.println("Temperature for the day: " + temp);
@@ -125,6 +131,8 @@ public class WeatherSystem {
 				System.out.println("=============================================");
 			}
 		}
+		//back to default settings
+		this.resetWeatherData();
 	}
 	
 	public String getDayOfTheWeek(long unixTimestamp) {
@@ -174,7 +182,7 @@ public class WeatherSystem {
 	@SuppressWarnings("unchecked")
 	public void resetWeatherData() {
 		this.result = "";
-		this.setURLString();
+		this.setURLString(WEATHER_MODE);
 		this.obtainWeatherData();
 		this.responseMap = jsonToMap(this.result);
 		this.mainMap = (Map<String, Object>)responseMap.get("main");
@@ -282,26 +290,26 @@ public class WeatherSystem {
 		System.out.println("=========================================");
 	}
 	
-	// get rid of main method once mvc architecture is setup properly
+	// get rid of main method once view/controller architecture is setup properly
 	public static void main(String[] args) {
 
 		WeatherSystem ws1 = new WeatherSystem("Oakville, CA");
 		WeatherSystem ws2 = new WeatherSystem("San Francisco, US");
 		
+		ws1.get5DayForecast();
 		ws2.get5DayForecast();
 		
-//		ws1.printWeatherData();
-//		System.out.println();
-//		ws2.printWeatherData();
-//		System.out.println();
-//		ws2.setLocation("Skopje, MK");
-//		ws2.printWeatherData();
-//		ws2.changeMeasurementSystem("imperial");
-//		ws2.printWeatherData();
-//		ws2.changeMeasurementSystem("METRIC");
-//		ws2.printWeatherData();
+		ws1.printWeatherData();
+		ws2.printWeatherData();
+
+		ws2.setLocation("Skopje, MK");
+		ws2.printWeatherData();
+		ws2.changeMeasurementSystem(IMPERIAL_MODE);
+		ws2.printWeatherData();
+		ws2.changeMeasurementSystem(METRIC_MODE);
+		ws2.printWeatherData();
 		
-		
-		
+		ws2.get5DayForecast();
+
 	}
 }
