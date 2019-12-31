@@ -15,6 +15,8 @@ import java.util.Map;
 import java.util.TimeZone;
 import com.google.gson.reflect.*;
 import com.google.gson.Gson;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class WeatherSystem {
 	
@@ -67,37 +69,30 @@ public class WeatherSystem {
 		
 		this.result = "";
 		this.urlString = "http://api.openweathermap.org/data/2.5/forecast?q=Oakville,CA&APPID=3c5aee26050f4b4e3b83118e62088949&units=metric";
-		String line;
-
-		try {
-			URL url = new URL(this.urlString);
-			URLConnection con = url.openConnection();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-			
-			while ((line = reader.readLine()) != null ) {
-				this.addToResult(line);
-			}
-			
-			reader.close();
+		
+		this.obtainWeatherData();
 			
 			this.responseMap = jsonToMap(this.result);
 			
-			//this grabs all the dt results over the 5day forecast
-			//need to now check if the last part is 12:00:00
-			//could use a regex here -> i.e [xxxx-xx-xx 12:00:00], then if it matches the regex, parse the 
-			// min_temp, max_temp and temp results into an arraylist.
-			ArrayList<Map<String, Object>> weather = (ArrayList<Map<String, Object>>)responseMap.get("list");
-			Map<String, Object> weatherStatus = (Map<String, Object>)weather.get(0);
-			for(int i = 0; i < weather.size(); i++) {
-				Map<String, Object> m = weather.get(i);
-				System.out.println(m.get("dt_txt"));
+			Pattern midDay = Pattern.compile("^20(19|20|21|22)-(0[1-9]|1[0-2])-"
+					+ "(0[1-9]|1[0-9]|2[0-9]|3[0-1]) 12:00:00$");
+			Matcher m;
+			
+			
+			ArrayList<Map<String, Object>> forecastData = (ArrayList<Map<String, Object>>)responseMap.get("list");
+
+			for(int i = 0; i < forecastData.size(); i++) {
+				Map<String, Object> currentObject = forecastData.get(i);
+				String checkThis = (String) currentObject.get("dt_txt");
+				m = midDay.matcher(checkThis);
+				
+				if (m.matches()) {
+					System.out.println("It's a match." + " Line #" + i);
+					System.out.println(checkThis);
+				}
+
 			}
-			
-			
-		} catch(IOException e) {
-			System.out.println(e.getMessage());
 		}
-	}
 	
 	public void obtainWeatherData() {
 		String line;
