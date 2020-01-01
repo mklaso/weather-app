@@ -18,7 +18,7 @@ import com.google.gson.Gson;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class WeatherSystem {
+public class WeatherSystem extends Observable {
 	
 	private static final String API_KEY = "3c5aee26050f4b4e3b83118e62088949";
 	private String location;
