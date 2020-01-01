@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
 public class SceneChangeController implements EventHandler<ActionEvent> {
@@ -39,8 +40,18 @@ public class SceneChangeController implements EventHandler<ActionEvent> {
 	}
 
 	@Override
-	public void handle(ActionEvent arg0) {
-		// TODO Auto-generated method stub
+	public void handle(ActionEvent event) {
+		String whichButton = ((Button)event.getSource()).getText();
+			//routes to signup page
+		if (whichButton.equals("Create an account")) {
+			this.window.setScene(getSceneReference(1));
+			//routes to login page
+		} else if (whichButton.equals("Already have an account?")) {
+			this.window.setScene(getSceneReference(0));
+			//routes to login page (presumably from a logout button on weather page)
+		} else {
+			this.window.setScene(getSceneReference(0));
+		}
 		
 	}
 }

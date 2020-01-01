@@ -1,6 +1,7 @@
 package view;
 
 import javafx.stage.Stage;
+import controller.EnterKeypressHandler;
 import controller.LoadWeatherController;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -20,16 +21,24 @@ public class WeatherSystemView extends FlowPane implements Observer {
 	public WeatherSystemView(Stage stage) {
 		this.stage = stage;
 		this.setAlignment(Pos.CENTER);
-		//this.setPadding(new Insets(20));
+		this.setPadding(new Insets(40, 10, 40, 10));
 		
 		HBox searchBox = new HBox(5);
 		
 		TextField locationField = new TextField();
-		locationField.setPrefColumnCount(20);
-		locationField.setPromptText("enter a location (format: San Francisco, US)");
+		locationField.setPrefColumnCount(17);
+		locationField.setMinSize(30,  30);
+		locationField.setPromptText("enter a location (e.g: Oakville, CA)");
+		locationField.setStyle("-fx-prompt-text-fill: derive(-fx-control-inner-background,-30%); }");
 		
 		Button searchButton = new Button("Get Weather");
+		searchButton.setMinSize(30, 30);
+		
+		//sets up event handler for loading weather on search
 		searchButton.setOnAction(new LoadWeatherController(locationField));
+		
+		//allows enter button to be used for making a search
+		locationField.setOnKeyPressed(new EnterKeypressHandler(searchButton));
 		
 		searchBox.getChildren().addAll(locationField, searchButton);
 		

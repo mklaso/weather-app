@@ -42,7 +42,7 @@ public class WeatherApplication extends Application {
 		
 		// STAGE
 		//change this to be login screen at start, when all is set up.
-		window.setScene(weatherScene);
+		window.setScene(signupScene);
 		window.setTitle("Cloudy Skies");
 	    
 		// LAUNCH THE GUI
