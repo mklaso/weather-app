@@ -32,10 +32,12 @@ public class LoginController implements EventHandler<ActionEvent> {
 			sceneChanger.window.setScene(sceneChanger.getSceneReference(2));
 			sceneChanger.loginView.getUsername().clear();
 			sceneChanger.loginView.getPassword().clear();
+			sceneChanger.window.setTitle("Cloudy Skies Weather Application");
 		} else if (whichButton.equals("Signup")) {
 			sceneChanger.window.setScene(sceneChanger.getSceneReference(0));
 			sceneChanger.signupView.getUsername().clear();
 			sceneChanger.signupView.getPassword().clear();
+			sceneChanger.window.setTitle("Login");
 		}
 		//when the database is setup w/ SqLite, this part should check
 		//if the username/password exists within the database,

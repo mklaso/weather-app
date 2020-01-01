@@ -57,15 +57,19 @@ public class SceneChangeController implements EventHandler<ActionEvent> {
 			this.window.setScene(getSceneReference(1));
 			loginView.getUsername().clear();
 			loginView.getPassword().clear();
+			this.window.setTitle("Signup");
 			//routes to login page
 		} else if (whichButton.equals("Already have an account?")) {
 			this.window.setScene(getSceneReference(0));
 			signupView.getUsername().clear();
 			signupView.getPassword().clear();
+			this.window.setTitle("Login");
+			
 			//routes to login page (presumably from a logout button on weather page)
 		} else {
 			this.window.setScene(getSceneReference(0));
 			weatherView.locationField.clear();
+			this.window.setTitle("Login");
 		}
 		
 	}

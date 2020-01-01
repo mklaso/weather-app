@@ -27,17 +27,20 @@ public class WeatherSystemView extends FlowPane implements Observer {
 		this.setStyle("-fx-background-color:"
 				+ "linear-gradient(from 25% 25% to 100% 100%, rgb(177, 249, 254), rgb(226, 166, 255));"
 				+ " -fx-border-color:black;");
+		stage.setTitle("Cloudy Skies");
 		
 		HBox searchBox = new HBox(5);
 		
 		locationField.setPrefColumnCount(17);
-		locationField.setMinSize(30,  30);
+		locationField.setMinSize(30,  39);
 		locationField.setPromptText("enter a location (e.g: Oakville, CA)");
-		locationField.setStyle("-fx-prompt-text-fill: derive(-fx-control-inner-background,-30%); }");
+		locationField.setStyle(ButtonHighlighter.TEXT);
 		
 		Button searchButton = new Button("Get Weather");
 		searchButton.setMinSize(30, 30);
+		searchButton.setStyle(ButtonHighlighter.REGULAR);
 		goBackButton.setMinSize(30, 30);
+		goBackButton.setStyle(ButtonHighlighter.REGULAR);
 		
 		//sets up event handler for loading weather on search
 		searchButton.setOnAction(new LoadWeatherController(locationField));
@@ -48,6 +51,9 @@ public class WeatherSystemView extends FlowPane implements Observer {
 		searchBox.getChildren().addAll(locationField, searchButton, goBackButton);
 		
 		this.getChildren().addAll(searchBox);
+		
+		ButtonHighlighter.modifyColour(searchButton, ButtonHighlighter.REGULAR, ButtonHighlighter.HIGHLIGHT);
+		ButtonHighlighter.modifyColour(goBackButton, ButtonHighlighter.REGULAR, ButtonHighlighter.HIGHLIGHT);
 	}
 	
 	/**

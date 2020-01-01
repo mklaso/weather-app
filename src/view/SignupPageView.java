@@ -25,25 +25,27 @@ public class SignupPageView extends FlowPane {
 		this.setAlignment(Pos.CENTER);
 		this.setPadding(new Insets(40, 10, 40, 10));
 		this.setStyle("-fx-background-color:"
-				+ "linear-gradient(from 25% 25% to 100% 100%, rgb(254, 152, 154), rgb(248, 225, 137));"
+				+ "linear-gradient(from 25% 25% to 100% 100%, rgb(169, 169, 252), rgb(177, 249, 254));"
 				+ " -fx-border-color:black;");
 		
 		VBox loginBox = new VBox(15);
 		
 		username.setPrefColumnCount(17);
-		username.setMinSize(30,  30);
+		username.setMinSize(30,  39);
 		username.setPromptText("enter your desired username");
-		username.setStyle("-fx-prompt-text-fill: derive(-fx-control-inner-background,-30%); }");
+		username.setStyle(ButtonHighlighter.TEXT);
 		
 		password.setPrefColumnCount(17);
-		password.setMinSize(30,  30);
+		password.setMinSize(30,  39);
 		password.setPromptText("enter your desired password");
-		password.setStyle("-fx-prompt-text-fill: derive(-fx-control-inner-background,-30%); }");
+		password.setStyle(ButtonHighlighter.TEXT);
 		
 		HBox buttonsBox = new HBox(10);
 		signupButton.setMinSize(60, 30);
+		signupButton.setStyle(ButtonHighlighter.REGULAR);
 		
 		accountButton.setMinHeight(30);
+		accountButton.setStyle(ButtonHighlighter.REGULAR);
 		
 		buttonsBox.getChildren().addAll(signupButton, accountButton);
 		buttonsBox.setAlignment(Pos.CENTER);
@@ -55,6 +57,9 @@ public class SignupPageView extends FlowPane {
 		loginBox.getChildren().addAll(username, password, buttonsBox);
 		
 		this.getChildren().addAll(loginBox);
+		
+		ButtonHighlighter.modifyColour(signupButton, ButtonHighlighter.REGULAR, ButtonHighlighter.HIGHLIGHT);
+		ButtonHighlighter.modifyColour(accountButton, ButtonHighlighter.REGULAR, ButtonHighlighter.HIGHLIGHT);
 	}
 	
 	public TextField getUsername() {

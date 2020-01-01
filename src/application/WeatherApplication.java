@@ -24,7 +24,8 @@ public class WeatherApplication extends Application {
 		SignupPageView signupView = new SignupPageView(window);
 		
 		// CONTROLLERS setup and CONTROLLERS -> MODEL hookup
-		SceneChangeController sceneController = new SceneChangeController(weatherView, loginView, signupView);
+		SceneChangeController sceneController = 
+				new SceneChangeController(weatherView, loginView, signupView);
 		sceneController.setStageReference(window);
 		
 		// MODEL -> VIEW hookup
@@ -56,9 +57,8 @@ public class WeatherApplication extends Application {
 		sceneController.setSceneReference(weatherScene); //2
 		
 		// STAGE
-		//change this to be login screen at start, when all is set up.
 		window.setScene(loginScene);
-		window.setTitle("Cloudy Skies");
+		window.setTitle("Login");
 	    
 		// LAUNCH THE GUI
 		window.show();

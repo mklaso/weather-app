@@ -6,7 +6,6 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -31,27 +30,26 @@ public class LoginPageView extends FlowPane {
 		VBox loginBox = new VBox(15);
 		
 		username.setPrefColumnCount(17);
-		username.setMinSize(30,  30);
+		username.setMinSize(30,  39);
 		username.setPromptText("enter your username");
-		username.setStyle("-fx-prompt-text-fill: derive(-fx-control-inner-background,-30%); }");
+		username.setStyle(ButtonHighlighter.TEXT);
 		
 		password.setPrefColumnCount(17);
-		password.setMinSize(30,  30);
+		password.setMinSize(30,  39);
 		password.setPromptText("enter your password");
-		password.setStyle("-fx-prompt-text-fill: derive(-fx-control-inner-background,-30%); }");
+		password.setStyle(ButtonHighlighter.TEXT);
 		
 		HBox buttonsBox = new HBox(10);
 		
 		loginButton.setMinSize(60, 30);
+		loginButton.setStyle(ButtonHighlighter.REGULAR);
 		
-		accountButton.setMinHeight(30);
+		accountButton.setMinSize(200, 30);
+		accountButton.setStyle(ButtonHighlighter.REGULAR);
 		
 		buttonsBox.getChildren().addAll(loginButton, accountButton);
 		buttonsBox.setAlignment(Pos.CENTER);
 		
-		//setting up the login controller
-		
-		//routes to register screen if user does not have an account
 		
 		//setting up enter key to work for logging in
 		username.setOnKeyPressed(new EnterKeypressHandler(loginButton));
@@ -60,6 +58,10 @@ public class LoginPageView extends FlowPane {
 		loginBox.getChildren().addAll(username, password, buttonsBox);
 		
 		this.getChildren().addAll(loginBox);
+		
+		ButtonHighlighter.modifyColour(loginButton, ButtonHighlighter.REGULAR, ButtonHighlighter.HIGHLIGHT);
+		ButtonHighlighter.modifyColour(accountButton, ButtonHighlighter.REGULAR, ButtonHighlighter.HIGHLIGHT);
+
 	}
 	
 	public TextField getUsername() {
