@@ -6,11 +6,21 @@ import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
+import view.*;
 
 public class SceneChangeController implements EventHandler<ActionEvent> {
 	
 	Stage window;
 	public ArrayList<Scene> sceneReferences = new ArrayList<Scene>();
+	WeatherSystemView weatherView;
+	LoginPageView loginView;
+	SignupPageView signupView;
+	public SceneChangeController(WeatherSystemView weatherView,
+			LoginPageView loginView, SignupPageView signupView) {
+		this.weatherView = weatherView;
+		this.loginView = loginView;
+		this.signupView = signupView;
+	}
 	
 	/**
 	 * Set reference to the specific stage
@@ -45,12 +55,17 @@ public class SceneChangeController implements EventHandler<ActionEvent> {
 			//routes to signup page
 		if (whichButton.equals("Create an account")) {
 			this.window.setScene(getSceneReference(1));
+			loginView.getUsername().clear();
+			loginView.getPassword().clear();
 			//routes to login page
 		} else if (whichButton.equals("Already have an account?")) {
 			this.window.setScene(getSceneReference(0));
+			signupView.getUsername().clear();
+			signupView.getPassword().clear();
 			//routes to login page (presumably from a logout button on weather page)
 		} else {
 			this.window.setScene(getSceneReference(0));
+			weatherView.locationField.clear();
 		}
 		
 	}

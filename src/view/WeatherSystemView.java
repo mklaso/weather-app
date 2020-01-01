@@ -17,15 +17,19 @@ import model.Observer;
 public class WeatherSystemView extends FlowPane implements Observer {
 	
 	private Stage stage;
+	public Button goBackButton = new Button("Go Back");
+	public TextField locationField = new TextField();
 	
 	public WeatherSystemView(Stage stage) {
 		this.stage = stage;
 		this.setAlignment(Pos.CENTER);
 		this.setPadding(new Insets(40, 10, 40, 10));
+		this.setStyle("-fx-background-color:"
+				+ "linear-gradient(from 25% 25% to 100% 100%, rgb(177, 249, 254), rgb(226, 166, 255));"
+				+ " -fx-border-color:black;");
 		
 		HBox searchBox = new HBox(5);
 		
-		TextField locationField = new TextField();
 		locationField.setPrefColumnCount(17);
 		locationField.setMinSize(30,  30);
 		locationField.setPromptText("enter a location (e.g: Oakville, CA)");
@@ -33,6 +37,7 @@ public class WeatherSystemView extends FlowPane implements Observer {
 		
 		Button searchButton = new Button("Get Weather");
 		searchButton.setMinSize(30, 30);
+		goBackButton.setMinSize(30, 30);
 		
 		//sets up event handler for loading weather on search
 		searchButton.setOnAction(new LoadWeatherController(locationField));
@@ -40,7 +45,7 @@ public class WeatherSystemView extends FlowPane implements Observer {
 		//allows enter button to be used for making a search
 		locationField.setOnKeyPressed(new EnterKeypressHandler(searchButton));
 		
-		searchBox.getChildren().addAll(locationField, searchButton);
+		searchBox.getChildren().addAll(locationField, searchButton, goBackButton);
 		
 		this.getChildren().addAll(searchBox);
 	}

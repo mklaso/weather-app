@@ -15,21 +15,26 @@ import javafx.stage.Stage;
 public class LoginPageView extends FlowPane {
 
 	private Stage stage;
+	public Button loginButton = new Button("Login");
+	public Button accountButton = new Button("Create an account");
+	TextField username = new TextField();
+	PasswordField password = new PasswordField();
 	
 	public LoginPageView(Stage stage) {
 		this.stage = stage;
 		this.setAlignment(Pos.CENTER);
 		this.setPadding(new Insets(40, 10, 40, 10));
+		this.setStyle("-fx-background-color:"
+		+ "linear-gradient(from 25% 25% to 100% 100%, rgb(169, 169, 252), rgb(177, 249, 254));"
+		+ " -fx-border-color:black;");
 		
 		VBox loginBox = new VBox(15);
 		
-		TextField username = new TextField();
 		username.setPrefColumnCount(17);
 		username.setMinSize(30,  30);
 		username.setPromptText("enter your username");
 		username.setStyle("-fx-prompt-text-fill: derive(-fx-control-inner-background,-30%); }");
 		
-		PasswordField password = new PasswordField();
 		password.setPrefColumnCount(17);
 		password.setMinSize(30,  30);
 		password.setPromptText("enter your password");
@@ -37,20 +42,16 @@ public class LoginPageView extends FlowPane {
 		
 		HBox buttonsBox = new HBox(10);
 		
-		Button loginButton = new Button("Login");
 		loginButton.setMinSize(60, 30);
 		
-		Button accountButton = new Button("Need an account?");
 		accountButton.setMinHeight(30);
 		
 		buttonsBox.getChildren().addAll(loginButton, accountButton);
 		buttonsBox.setAlignment(Pos.CENTER);
 		
 		//setting up the login controller
-		loginButton.setOnAction(new LoginController(username, password));
 		
 		//routes to register screen if user does not have an account
-		accountButton.setOnAction(new SceneChangeController());
 		
 		//setting up enter key to work for logging in
 		username.setOnKeyPressed(new EnterKeypressHandler(loginButton));
@@ -59,6 +60,14 @@ public class LoginPageView extends FlowPane {
 		loginBox.getChildren().addAll(username, password, buttonsBox);
 		
 		this.getChildren().addAll(loginBox);
+	}
+	
+	public TextField getUsername() {
+		return this.username;
+	}
+	
+	public TextField getPassword() {
+		return this.password;
 	}
 
 }

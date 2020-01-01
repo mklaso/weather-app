@@ -9,7 +9,7 @@ public class LoginController implements EventHandler<ActionEvent> {
 
 	private TextField username;
 	private TextField password;
-	private SceneChangeController sceneChanger = new SceneChangeController();
+	private SceneChangeController sceneChanger;
 	
 	//signup handler will be very similar to this, except when you sign up, it'll check
 	//if the username already exists within the database, if it doesn't, it'll create a new
@@ -17,9 +17,11 @@ public class LoginController implements EventHandler<ActionEvent> {
 	//from the register page to the login page
 	//if the username already exists, a popout/alert message will come up saying the user already exists.
 	
-	public LoginController(TextField username, TextField password) {
+	public LoginController(TextField username, TextField password, 
+			SceneChangeController sceneChanger) {
 		this.username = username;
 		this.password = password;
+		this.sceneChanger = sceneChanger;
 	}
 	
 	@Override
@@ -27,7 +29,13 @@ public class LoginController implements EventHandler<ActionEvent> {
 		String whichButton = ((Button)event.getSource()).getText();
 		
 		if (whichButton.equals("Login")) {
-			sceneChanger.window.setScene(sceneChanger.getSceneReference(1));
+			sceneChanger.window.setScene(sceneChanger.getSceneReference(2));
+			sceneChanger.loginView.getUsername().clear();
+			sceneChanger.loginView.getPassword().clear();
+		} else if (whichButton.equals("Signup")) {
+			sceneChanger.window.setScene(sceneChanger.getSceneReference(0));
+			sceneChanger.signupView.getUsername().clear();
+			sceneChanger.signupView.getPassword().clear();
 		}
 		//when the database is setup w/ SqLite, this part should check
 		//if the username/password exists within the database,
