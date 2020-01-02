@@ -16,8 +16,8 @@ public class LoginPageView extends FlowPane {
 	private Stage stage;
 	public Button loginButton = new Button("Login");
 	public Button accountButton = new Button("Create an account");
-	TextField username = new TextField();
-	PasswordField password = new PasswordField();
+	private TextField username = new TextField();
+	private PasswordField password = new PasswordField();
 	
 	public LoginPageView(Stage stage) {
 		this.stage = stage;

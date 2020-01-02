@@ -35,6 +35,7 @@ public class WeatherSystem extends Observable {
 	public static final String FORECAST_MODE = "forecast";
 	public static final String METRIC_MODE = "metric";
 	public static final String IMPERIAL_MODE = "imperial";
+	public boolean valid = false;
 	
 	//add documentation later
 	@SuppressWarnings("unchecked")
@@ -42,9 +43,6 @@ public class WeatherSystem extends Observable {
 		this.location = location;
 		this.setURLString(WEATHER_MODE);
 		this.obtainWeatherData();
-		this.responseMap = jsonToMap(this.result);
-		this.mainMap = (Map<String, Object>)responseMap.get("main");
-		this.sysMap = (Map<String, Object>)responseMap.get("sys");
 	}
 	
 	public void setURLString(String type) {
@@ -83,7 +81,7 @@ public class WeatherSystem extends Observable {
 		
 		this.obtainWeatherData();
 			
-		this.responseMap = jsonToMap(this.result);
+		//this.responseMap = jsonToMap(this.result);
 		
 		Pattern midDay = Pattern.compile("^20(19|20|21|22)-(0[1-9]|1[0-2])-"
 				+ "(0[1-9]|1[0-9]|2[0-9]|3[0-1]) 12:00:00$");
@@ -124,6 +122,17 @@ public class WeatherSystem extends Observable {
 				temp = this.forecastData.get(day).get(0);
 				weatherCondition = this.forecastData.get(day).get(1);
 				
+				
+				//prob better to make this method return the arraylist containing 5 arraylists
+				//3 elements each like this: (day, temp, weatherCondition)
+				//get rid of the hashmap setup with each key as a day, value as arraylist
+				//overcomplicating things, and cant obtain the key/day from this.
+				//make 5 methods, each returns one of the 5 days of the forecast along w/ those 3
+				//data values
+				
+				System.out.println(this.urlString);
+				//parse json for "cod" -> if it's not code 200 (good) then it's an error/invalid city.
+				
 				System.out.println(checkThis);
 				System.out.println("Day of the Week: " + day);
 				System.out.println("Temperature for the day: " + temp);
@@ -153,9 +162,10 @@ public class WeatherSystem extends Observable {
 		} else if (timeValue == 0.0) {
 			return "Sunday";
 		}
-		return "invalid";
+		return "N/A";
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void obtainWeatherData() {
 		String line;
 
@@ -170,8 +180,20 @@ public class WeatherSystem extends Observable {
 			
 			reader.close();
 			
+			this.responseMap = jsonToMap(this.result);
+			
+			if (this.isValidSearch()) {
+				this.mainMap = (Map<String, Object>)responseMap.get("main");
+				this.sysMap = (Map<String, Object>)responseMap.get("sys");
+				this.valid = true;
+				//update view
+				this.notifyObservers();
+			} else {
+				this.valid = false;
+			}
+			
 		} catch(IOException e) {
-			System.out.println(e.getMessage());
+			//System.out.println(e.getMessage());
 		}
 	}
 	
@@ -184,9 +206,6 @@ public class WeatherSystem extends Observable {
 		this.result = "";
 		this.setURLString(WEATHER_MODE);
 		this.obtainWeatherData();
-		this.responseMap = jsonToMap(this.result);
-		this.mainMap = (Map<String, Object>)responseMap.get("main");
-		this.sysMap = (Map<String, Object>)responseMap.get("sys");
 	}
 	
 	public void setLocation(String s) {
@@ -197,11 +216,17 @@ public class WeatherSystem extends Observable {
 	}
 	
 	public String getTempType(Map<String, Object> map, String tempType) {
-		return String.valueOf(map.get(tempType)) + this.tempUnit;
+		if (this.valid) {
+			return String.valueOf(map.get(tempType)) + this.tempUnit;
+		}
+		return "N/A";
 	}
 	
 	public String getCityName() {
-		return (String) this.responseMap.get("name");
+		if (this.valid) {
+			return (String) this.responseMap.get("name");
+		}
+		return "N/A";
 	}
 	
 	public String getCurrentTemp(Map<String, Object> map) {
@@ -221,39 +246,72 @@ public class WeatherSystem extends Observable {
 	}
 	
 	public String getHumidity() {
-		return String.valueOf(this.mainMap.get("humidity")) + "%";
+		if (this.valid) {
+			return String.valueOf(this.mainMap.get("humidity")) + "%";
+		}
+		return "N/A";
 	}
 	
+	@SuppressWarnings("unchecked")
 	public String getWindConditions() {
-		@SuppressWarnings("unchecked")
-		Map<String, Object> wind = (Map<String, Object>)responseMap.get("wind");
-		return String.valueOf(wind.get("speed")) + "m/s";
+		
+		if (this.valid) {
+			Map<String, Object> wind = (Map<String, Object>)responseMap.get("wind");
+			return String.valueOf(wind.get("speed")) + "m/s";
+		}
+		return "N/A";
 	}
 	
+	@SuppressWarnings("unchecked")
 	public String getWeatherStatus(Map<String, Object> map) {
-		@SuppressWarnings("unchecked")
-		ArrayList<Map<String, Object>> weather = (ArrayList<Map<String, Object>>)map.get("weather");
-		Map<String, Object> weatherStatus = (Map<String, Object>)weather.get(0);
-		return (String) weatherStatus.get("description");	
+		
+		if (this.valid) {
+			ArrayList<Map<String, Object>> weather = (ArrayList<Map<String, Object>>)map.get("weather");
+			Map<String, Object> weatherStatus = (Map<String, Object>)weather.get(0);
+			return (String) weatherStatus.get("description");
+		}
+		return "N/A";
+	}
+	
+	public String getCode(Map<String, Object> map) {
+		if (map != null) {
+			String code = String.valueOf(map.get("cod"));
+			return code;
+		}
+		return "404";
+	}
+	
+	public boolean isValidSearch() {
+		if (this.getCode(this.responseMap).equals("200.0")) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	public double getTimezoneOffset(Map<String, Object> map) {
-		double timeOffset = (double)(map.get("timezone"));
-		return timeOffset;
+		if (this.valid) { 
+			double timeOffset = (double)(map.get("timezone"));
+			return timeOffset;
+		}
+		return 0;
 	}
 	
 	public String convertTime(String s) {
-		int offset = (int)(this.getTimezoneOffset(this.responseMap));
-		
-		if (s.equals("sunrise") || s.equals("sunset")) {
-			long l = (long)((double)sysMap.get(s));
-			long time = l + offset;
-			return formatTime(new Date(time * 1000));
-		} else {
-			long current = Instant.now().getEpochSecond();
-			long time = current + offset;
-			return formatTime(new Date(time * 1000));
+		if (this.valid) { 
+			int offset = (int)(this.getTimezoneOffset(this.responseMap));
+			
+			if (s.equals("sunrise") || s.equals("sunset")) {
+				long l = (long)((double)sysMap.get(s));
+				long time = l + offset;
+				return formatTime(new Date(time * 1000));
+			} else {
+				long current = Instant.now().getEpochSecond();
+				long time = current + offset;
+				return formatTime(new Date(time * 1000));
+			}
 		}
+		return "N/A";
 	}
 	
 	public String getSunriseTime() {
@@ -272,7 +330,7 @@ public class WeatherSystem extends Observable {
 	    SimpleDateFormat timeFormat = new SimpleDateFormat("h:mm a");
 	    timeFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 	    return timeFormat.format(dateObject);
-	 }
+	}
 	
 	public void printWeatherData() {
 		System.out.println("=========================================");
@@ -287,7 +345,21 @@ public class WeatherSystem extends Observable {
 		System.out.println("Current weather conditions: " + this.getWeatherStatus(this.responseMap) + "\n");
 		System.out.println("Sunrise at: " + this.getSunriseTime());
 		System.out.println("Sunset at: " + this.getSunsetTime());
+		System.out.println("Code for this API request: " + this.getCode(this.responseMap) + "\n");
+		System.out.println("Is it a valid search: " + this.isValidSearch());
 		System.out.println("=========================================");
+	}
+	
+	public Map<String, Object> getTempMap() {
+		return this.mainMap;
+	}
+	
+	public Map<String, Object> getAllDataMap() {
+		return this.responseMap;
+	}
+	
+	public Map<String, Object> getSysMap() {
+		return this.sysMap;
 	}
 	
 	// get rid of main method once view/controller architecture is setup properly
@@ -296,20 +368,21 @@ public class WeatherSystem extends Observable {
 		WeatherSystem ws1 = new WeatherSystem("Oakville, CA");
 		WeatherSystem ws2 = new WeatherSystem("San Francisco, US");
 		
-		ws1.get5DayForecast();
-		ws2.get5DayForecast();
-		
-		ws1.printWeatherData();
-		ws2.printWeatherData();
+//		ws1.get5DayForecast();
+//		ws2.get5DayForecast();
 
-		ws2.setLocation("Skopje, MK");
-		ws2.printWeatherData();
-		ws2.changeMeasurementSystem(IMPERIAL_MODE);
-		ws2.printWeatherData();
-		ws2.changeMeasurementSystem(METRIC_MODE);
-		ws2.printWeatherData();
-		
-		ws2.get5DayForecast();
+		//System.out.println(ws1.getCurrentTemp(ws1.mainMap));
+		ws1.printWeatherData();
+//		ws2.printWeatherData();
+//
+//		ws2.setLocation("Skopje, MK");
+//		ws2.printWeatherData();
+//		ws2.changeMeasurementSystem(IMPERIAL_MODE);
+//		ws2.printWeatherData();
+//		ws2.changeMeasurementSystem(METRIC_MODE);
+//		ws2.printWeatherData();
+//		
+//		ws2.get5DayForecast();
 
 	}
 }
