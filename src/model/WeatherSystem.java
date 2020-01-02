@@ -202,6 +202,8 @@ public class WeatherSystem extends Observable {
 	
 	@SuppressWarnings("unchecked")
 	public void resetWeatherData() {
+		this.measurementType = "&units=metric";
+		this.tempUnit = "°C";
 		this.result = "";
 		this.setURLString(WEATHER_MODE);
 		this.obtainWeatherData();
@@ -209,8 +211,6 @@ public class WeatherSystem extends Observable {
 	
 	public void setLocation(String s) {
 		this.location = s;
-		this.measurementType = "&units=metric";
-		this.tempUnit = "°C";
 		this.resetWeatherData();
 	}
 	
@@ -345,8 +345,6 @@ public class WeatherSystem extends Observable {
 		System.out.println("Current weather conditions: " + this.getWeatherStatus(this.responseMap) + "\n");
 		System.out.println("Sunrise at: " + this.getSunriseTime());
 		System.out.println("Sunset at: " + this.getSunsetTime());
-		System.out.println("Code for this API request: " + this.getCode(this.responseMap) + "\n");
-		System.out.println("Is it a valid search: " + this.isValidSearch());
 		System.out.println("=========================================");
 	}
 	
@@ -364,55 +362,5 @@ public class WeatherSystem extends Observable {
 	
 	public ArrayList<ArrayList<String>> getForecastData() {
 		return this.forecastData;
-	}
-	
-	// get rid of main method once view/controller architecture is setup properly
-	public static void main(String[] args) {
-
-		WeatherSystem ws1 = new WeatherSystem("Oakville, CA");
-		WeatherSystem ws2 = new WeatherSystem("San Francisco, US");
-		DayForecastSystem dfs = new DayForecastSystem(ws1);
-		
-		dfs.setForecastDay(1);
-		dfs.printForecastDay();
-		
-		dfs.setForecastDay(2);
-		dfs.printForecastDay();
-		
-		dfs.setForecastDay(3);
-		dfs.printForecastDay();
-		
-		dfs.setForecastDay(4);
-		dfs.printForecastDay();
-		
-		dfs.setForecastDay(5);
-		dfs.printForecastDay();
-		
-		dfs.setWeatherSystem(ws2);
-		
-		dfs.setForecastDay(1);
-		dfs.printForecastDay();
-//		ws1.print5DayForecast();
-//		
-//		ws2.get5DayForecast();
-//		ws2.print5DayForecast();
-//		
-//		ws1.setLocation("Oakville, CA");
-//		ws1.get5DayForecast();
-//		ws1.print5DayForecast();
-
-		//System.out.println(ws1.getCurrentTemp(ws1.mainMap));
-		//ws1.printWeatherData();
-//		ws2.printWeatherData();
-//
-//		ws2.setLocation("Skopje, MK");
-//		ws2.printWeatherData();
-//		ws2.changeMeasurementSystem(IMPERIAL_MODE);
-//		ws2.printWeatherData();
-//		ws2.changeMeasurementSystem(METRIC_MODE);
-//		ws2.printWeatherData();
-//		
-//		ws2.get5DayForecast();
-
 	}
 }
