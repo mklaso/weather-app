@@ -18,29 +18,25 @@ public class LoadWeatherController implements EventHandler<ActionEvent> {
 	
 	@Override
 	public void handle(ActionEvent event) {
-		System.out.println(question);
 		
 		String location = question.getText();
 
 		WeatherSystem ws = this.dfs.getWeatherSystem();
 		ws.setLocation(location);
+		ws.get5DayForecast();
 		
-		this.dfs.setWeatherSystem(ws);
-		ws.printWeatherData();
-		
-		this.dfs.setForecastDay(1);
-		this.dfs.printForecastDay();
-		
-		this.dfs.setForecastDay(2);
-		this.dfs.printForecastDay();
-		
-		this.dfs.setForecastDay(3);
-		this.dfs.printForecastDay();
-		
-		this.dfs.setForecastDay(4);
-		this.dfs.printForecastDay();
-		
-		this.dfs.setForecastDay(5);
-		this.dfs.printForecastDay();
+	    this.dfs.updateWeatherSystem(ws);
+		//ws.printWeatherData();
+	    this.dfs.print5DayForecast();
+
+		if (this.dfs.forecastDataExists()) {
+			this.dfs.setForecastDay(1);
+			this.dfs.setForecastDay(2);	
+			this.dfs.setForecastDay(3);
+			this.dfs.setForecastDay(4);
+			this.dfs.setForecastDay(5);
+		} else  {
+			this.dfs.setInvalid5DayForecast();
+		}
 	}
 }

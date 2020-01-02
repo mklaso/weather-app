@@ -10,7 +10,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 import com.google.gson.reflect.*;
@@ -29,8 +28,6 @@ public class WeatherSystem extends Observable {
 	private Map<String, Object> responseMap;
 	private Map<String, Object> mainMap;
 	private Map<String, Object> sysMap;
-//	public HashMap<String, ArrayList<String>> forecastData
-//			= new HashMap<String, ArrayList<String>>();
 	private ArrayList<ArrayList<String>> forecastData = new ArrayList<ArrayList<String>>();
 	public static final String WEATHER_MODE = "weather";
 	public static final String FORECAST_MODE = "forecast";
@@ -39,12 +36,16 @@ public class WeatherSystem extends Observable {
 	public boolean valid = false;
 	
 	//add documentation later
-	@SuppressWarnings("unchecked")
 	public WeatherSystem(String location) {
 		this.location = location;
 		this.setURLString(WEATHER_MODE);
 		this.obtainWeatherData();
 	}
+	
+	public void resetForecastData() {
+		this.forecastData.clear();
+	}
+	
 	
 	public void setURLString(String type) {
 		if (type.equals(WEATHER_MODE)) {
@@ -89,56 +90,42 @@ public class WeatherSystem extends Observable {
 		
 		//holds all forecast data over 5 day/3hr periods
 		if (responseMap != null) {
-		ArrayList<Map<String, Object>> forecast = (ArrayList<Map<String, Object>>)responseMap.get("list");
-		//to get timezone
-		Map<String, Object> city = (Map<String, Object>)responseMap.get("city");
-		
-		System.out.println("Here is the 5 day forecast for " + this.location + ".\n");
-		for(int i = 0; i < forecast.size(); i++) {
-			Map<String, Object> currentObject = forecast.get(i);
-			String checkThis = (String) currentObject.get("dt_txt");
-			m = midDay.matcher(checkThis);
+			ArrayList<Map<String, Object>> forecast = (ArrayList<Map<String, Object>>)responseMap.get("list");
+			//to get timezone
 			
-			if (m.matches()) {
-				Map<String, Object> main = (Map<String, Object>)currentObject.get("main");
-				String temp = getCurrentTemp(main);
-				String weatherCondition = getWeatherStatus(currentObject);
+			if (forecast != null) {
+				Map<String, Object> city = (Map<String, Object>)responseMap.get("city");
 				
-				//getting and setting up the days according to the parsed unix timestamp
-				int offset = (int)getTimezoneOffset(city);
-				long l = (long)((double)currentObject.get("dt"));
-				long time = l + offset;
-				
-				//day of the week for the specific timestamp
-				String day = getDayOfTheWeek(time);
-				
-				//setting up weather data in an arraylist for each day
-				ArrayList<String> conditions = new ArrayList<String>();
-				conditions.add(day);
-				conditions.add(temp);
-				conditions.add(weatherCondition);
-				
-				this.forecastData.add(conditions);
+				for(int i = 0; i < forecast.size(); i++) {
+					Map<String, Object> currentObject = forecast.get(i);
+					String checkThis = (String) currentObject.get("dt_txt");
+					m = midDay.matcher(checkThis);
+					
+					if (m.matches()) {
+						Map<String, Object> main = (Map<String, Object>)currentObject.get("main");
+						String temp = getCurrentTemp(main);
+						String weatherCondition = getWeatherStatus(currentObject);
+						
+						//getting and setting up the days according to the parsed unix timestamp
+						int offset = (int)getTimezoneOffset(city);
+						long l = (long)((double)currentObject.get("dt"));
+						long time = l + offset;
+						
+						//day of the week for the specific timestamp
+						String day = getDayOfTheWeek(time);
+						
+						//setting up weather data in an arraylist for each day
+						ArrayList<String> conditions = new ArrayList<String>();
+						conditions.add(day);
+						conditions.add(temp);
+						conditions.add(weatherCondition);
+						
+						this.forecastData.add(conditions);
+					}
+				}
 			}
-		}
-		//back to default settings
-		this.resetWeatherData();
-		} else {
-			System.out.println(this.location + " is an invalid location. 5 Day Forecast is unavailable.");
-		}
-	}
-	
-	//testing purposes
-	public void print5DayForecast() {
-		for(int i = 0; i < this.forecastData.size(); i++) {
-			String day = this.forecastData.get(i).get(0);
-			String temp = this.forecastData.get(i).get(1);
-			String weatherCondition = this.forecastData.get(i).get(2);
-			
-			System.out.println("Day of the Week: " + day);
-			System.out.println("Temperature for the day: " + temp);
-			System.out.println("Weather conditions for the day: " + weatherCondition);
-			System.out.println("=============================================");
+			//back to default settings
+			this.resetWeatherData();
 		}
 	}
 	
@@ -192,7 +179,7 @@ public class WeatherSystem extends Observable {
 			
 		} catch(IOException e) {
 			this.valid = false;
-			//System.out.println(e.getMessage());
+			System.out.println(e.getMessage());
 		}
 	}
 	
@@ -200,7 +187,6 @@ public class WeatherSystem extends Observable {
 		this.result += s;
 	}
 	
-	@SuppressWarnings("unchecked")
 	public void resetWeatherData() {
 		this.measurementType = "&units=metric";
 		this.tempUnit = "°C";
@@ -212,6 +198,10 @@ public class WeatherSystem extends Observable {
 	public void setLocation(String s) {
 		this.location = s;
 		this.resetWeatherData();
+	}
+	
+	public String getLocation() {
+		return this.location;
 	}
 	
 	public String getTempType(Map<String, Object> map, String tempType) {
@@ -333,19 +323,23 @@ public class WeatherSystem extends Observable {
 	
 	//testing purposes
 	public void printWeatherData() {
-		System.out.println("=========================================");
-		System.out.println("Local time in " + this.getCityName() + " is: " + this.getLocalTime());
-		System.out.println("Here are the stats for " + this.location + ".\n");
-		System.out.println("Current temperature: " + this.getCurrentTemp(this.mainMap));
-		System.out.println("It feels like: " + this.getFeelsLikeTemp(this.mainMap));
-		System.out.println("Min temperature: " + this.getMinTemp(this.mainMap));
-		System.out.println("Max temperature: " + this.getMaxTemp(this.mainMap) + "\n");
-		System.out.println("Humidity of: " + this.getHumidity());
-		System.out.println("Wind speeds of: " + this.getWindConditions());
-		System.out.println("Current weather conditions: " + this.getWeatherStatus(this.responseMap) + "\n");
-		System.out.println("Sunrise at: " + this.getSunriseTime());
-		System.out.println("Sunset at: " + this.getSunsetTime());
-		System.out.println("=========================================");
+		if ((this.mainMap != null) && (this.responseMap != null) && (this.sysMap != null)) {
+			System.out.println("=========================================");
+			System.out.println("Local time in " + this.getCityName() + " is: " + this.getLocalTime());
+			System.out.println("Here are the stats for " + this.location + ".\n");
+			System.out.println("Current temperature: " + this.getCurrentTemp(this.mainMap));
+			System.out.println("It feels like: " + this.getFeelsLikeTemp(this.mainMap));
+			System.out.println("Min temperature: " + this.getMinTemp(this.mainMap));
+			System.out.println("Max temperature: " + this.getMaxTemp(this.mainMap) + "\n");
+			System.out.println("Humidity of: " + this.getHumidity());
+			System.out.println("Wind speeds of: " + this.getWindConditions());
+			System.out.println("Current weather conditions: " + this.getWeatherStatus(this.responseMap) + "\n");
+			System.out.println("Sunrise at: " + this.getSunriseTime());
+			System.out.println("Sunset at: " + this.getSunsetTime());
+			System.out.println("=========================================");
+		} else {
+			System.out.println("Invalid location.");
+		}
 	}
 	
 	public Map<String, Object> getTempMap() {

@@ -92,9 +92,8 @@ public class WeatherSystemView extends FlowPane implements Observer {
 
 	@Override
 	public void update(Observable o) {
-		// TODO Auto-generated method stub
+
 		VBox d = new VBox(getForecastDay(this.dfs.getCurrentDay()));
-		System.out.println(this.dfs.getCurrentDay());
 		
 		if (forecastBox.getChildren().size() == 5) {
 			forecastBox.getChildren().clear();
