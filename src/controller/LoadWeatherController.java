@@ -22,6 +22,8 @@ public class LoadWeatherController implements EventHandler<ActionEvent> {
 		
 		//ws.printWeatherData();
 		System.out.println(ws.getCurrentTemp(ws.getTempMap()));
+		
 		ws.get5DayForecast();
+		ws.print5DayForecast();
 	}
 }

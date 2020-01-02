@@ -29,8 +29,9 @@ public class WeatherSystem extends Observable {
 	private Map<String, Object> responseMap;
 	private Map<String, Object> mainMap;
 	private Map<String, Object> sysMap;
-	public HashMap<String, ArrayList<String>> forecastData
-			= new HashMap<String, ArrayList<String>>();
+//	public HashMap<String, ArrayList<String>> forecastData
+//			= new HashMap<String, ArrayList<String>>();
+	private ArrayList<ArrayList<String>> forecastData = new ArrayList<ArrayList<String>>();
 	public static final String WEATHER_MODE = "weather";
 	public static final String FORECAST_MODE = "forecast";
 	public static final String METRIC_MODE = "metric";
@@ -80,21 +81,21 @@ public class WeatherSystem extends Observable {
 		setURLString(FORECAST_MODE);
 		
 		this.obtainWeatherData();
-			
-		//this.responseMap = jsonToMap(this.result);
+		this.valid = true;
 		
 		Pattern midDay = Pattern.compile("^20(19|20|21|22)-(0[1-9]|1[0-2])-"
 				+ "(0[1-9]|1[0-9]|2[0-9]|3[0-1]) 12:00:00$");
 		Matcher m;
 		
 		//holds all forecast data over 5 day/3hr periods
-		ArrayList<Map<String, Object>> forecastData = (ArrayList<Map<String, Object>>)responseMap.get("list");
+		if (responseMap != null) {
+		ArrayList<Map<String, Object>> forecast = (ArrayList<Map<String, Object>>)responseMap.get("list");
 		//to get timezone
 		Map<String, Object> city = (Map<String, Object>)responseMap.get("city");
 		
 		System.out.println("Here is the 5 day forecast for " + this.location + ".\n");
-		for(int i = 0; i < forecastData.size(); i++) {
-			Map<String, Object> currentObject = forecastData.get(i);
+		for(int i = 0; i < forecast.size(); i++) {
+			Map<String, Object> currentObject = forecast.get(i);
 			String checkThis = (String) currentObject.get("dt_txt");
 			m = midDay.matcher(checkThis);
 			
@@ -113,35 +114,32 @@ public class WeatherSystem extends Observable {
 				
 				//setting up weather data in an arraylist for each day
 				ArrayList<String> conditions = new ArrayList<String>();
+				conditions.add(day);
 				conditions.add(temp);
 				conditions.add(weatherCondition);
 				
-				//key: temp of that day, value: weather data of the day
-				this.forecastData.put(day, conditions);
-				
-				temp = this.forecastData.get(day).get(0);
-				weatherCondition = this.forecastData.get(day).get(1);
-				
-				
-				//prob better to make this method return the arraylist containing 5 arraylists
-				//3 elements each like this: (day, temp, weatherCondition)
-				//get rid of the hashmap setup with each key as a day, value as arraylist
-				//overcomplicating things, and cant obtain the key/day from this.
-				//make 5 methods, each returns one of the 5 days of the forecast along w/ those 3
-				//data values
-				
-				System.out.println(this.urlString);
-				//parse json for "cod" -> if it's not code 200 (good) then it's an error/invalid city.
-				
-				System.out.println(checkThis);
-				System.out.println("Day of the Week: " + day);
-				System.out.println("Temperature for the day: " + temp);
-				System.out.println("Weather conditions for the day: " + weatherCondition);
-				System.out.println("=============================================");
+				this.forecastData.add(conditions);
 			}
 		}
 		//back to default settings
 		this.resetWeatherData();
+		} else {
+			System.out.println(this.location + " is an invalid location. 5 Day Forecast is unavailable.");
+		}
+	}
+	
+	//testing purposes
+	public void print5DayForecast() {
+		for(int i = 0; i < this.forecastData.size(); i++) {
+			String day = this.forecastData.get(i).get(0);
+			String temp = this.forecastData.get(i).get(1);
+			String weatherCondition = this.forecastData.get(i).get(2);
+			
+			System.out.println("Day of the Week: " + day);
+			System.out.println("Temperature for the day: " + temp);
+			System.out.println("Weather conditions for the day: " + weatherCondition);
+			System.out.println("=============================================");
+		}
 	}
 	
 	public String getDayOfTheWeek(long unixTimestamp) {
@@ -162,7 +160,7 @@ public class WeatherSystem extends Observable {
 		} else if (timeValue == 0.0) {
 			return "Sunday";
 		}
-		return "N/A";
+		return "Unknown";
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -193,6 +191,7 @@ public class WeatherSystem extends Observable {
 			}
 			
 		} catch(IOException e) {
+			this.valid = false;
 			//System.out.println(e.getMessage());
 		}
 	}
@@ -332,6 +331,7 @@ public class WeatherSystem extends Observable {
 	    return timeFormat.format(dateObject);
 	}
 	
+	//testing purposes
 	public void printWeatherData() {
 		System.out.println("=========================================");
 		System.out.println("Local time in " + this.getCityName() + " is: " + this.getLocalTime());
@@ -362,17 +362,47 @@ public class WeatherSystem extends Observable {
 		return this.sysMap;
 	}
 	
+	public ArrayList<ArrayList<String>> getForecastData() {
+		return this.forecastData;
+	}
+	
 	// get rid of main method once view/controller architecture is setup properly
 	public static void main(String[] args) {
 
 		WeatherSystem ws1 = new WeatherSystem("Oakville, CA");
 		WeatherSystem ws2 = new WeatherSystem("San Francisco, US");
+		DayForecastSystem dfs = new DayForecastSystem(ws1);
 		
-//		ws1.get5DayForecast();
+		dfs.setForecastDay(1);
+		dfs.printForecastDay();
+		
+		dfs.setForecastDay(2);
+		dfs.printForecastDay();
+		
+		dfs.setForecastDay(3);
+		dfs.printForecastDay();
+		
+		dfs.setForecastDay(4);
+		dfs.printForecastDay();
+		
+		dfs.setForecastDay(5);
+		dfs.printForecastDay();
+		
+		dfs.setWeatherSystem(ws2);
+		
+		dfs.setForecastDay(1);
+		dfs.printForecastDay();
+//		ws1.print5DayForecast();
+//		
 //		ws2.get5DayForecast();
+//		ws2.print5DayForecast();
+//		
+//		ws1.setLocation("Oakville, CA");
+//		ws1.get5DayForecast();
+//		ws1.print5DayForecast();
 
 		//System.out.println(ws1.getCurrentTemp(ws1.mainMap));
-		ws1.printWeatherData();
+		//ws1.printWeatherData();
 //		ws2.printWeatherData();
 //
 //		ws2.setLocation("Skopje, MK");
