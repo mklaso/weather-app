@@ -185,7 +185,7 @@ public class WeatherSystem extends Observable {
 				this.sysMap = (Map<String, Object>)responseMap.get("sys");
 				this.valid = true;
 				//update view
-				this.notifyObservers();
+				//this.notifyObservers();
 			} else {
 				this.valid = false;
 			}

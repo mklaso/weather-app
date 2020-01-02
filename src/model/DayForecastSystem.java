@@ -2,7 +2,7 @@ package model;
 
 import java.util.ArrayList;
 
-public class DayForecastSystem {
+public class DayForecastSystem extends Observable {
 	
 	//in the view, make a method thats called something like getForecastDay()
 		//and have it return a vbox, in this vbox set everything up, i.e
@@ -17,11 +17,16 @@ public class DayForecastSystem {
 	private String day;
 	private String temp;
 	private String weather;
+	private int dayNumber;
 	
 	public DayForecastSystem(WeatherSystem ws) {
 		this.ws = ws;
 		this.ws.get5DayForecast();
 		this.forecastData = ws.getForecastData();
+	}
+	
+	public WeatherSystem getWeatherSystem() {
+		return this.ws;
 	}
 	
 	public void setWeatherSystem(WeatherSystem newWs) {
@@ -30,25 +35,30 @@ public class DayForecastSystem {
 		this.forecastData = ws.getForecastData();
 	}
 	
+	public int getCurrentDay() {
+		return this.dayNumber;
+	}
+	
 	public void setForecastDay(int number) {
-		int dayNumber = 0;
+		this.dayNumber = 0;
 		
 		if (number == 1) {
-			dayNumber = 0;
+			this.dayNumber = 0;
 		} else if (number == 2) {
-			dayNumber = 1;
+			this.dayNumber = 1;
 		} else if (number == 3) {
-			dayNumber = 2;
+			this.dayNumber = 2;
 		} else if (number == 4) {
-			dayNumber = 3;
+			this.dayNumber = 3;
 		} else if (number == 5) {
-			dayNumber = 4;
+			this.dayNumber = 4;
 		}
 		
 		if (this.forecastData != null) {
 			setDay(this.forecastData.get(dayNumber).get(0));
 			setTemp(this.forecastData.get(dayNumber).get(1));
 			setWeather(this.forecastData.get(dayNumber).get(2));
+			this.notifyObservers();
 		} else {
 			System.out.print("Forecast data list is empty.");
 		}

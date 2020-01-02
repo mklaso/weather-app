@@ -2,6 +2,7 @@ package application;
 	
 import javafx.application.Application;
 import javafx.stage.Stage;
+import model.DayForecastSystem;
 import model.WeatherSystem;
 import view.*;
 import controller.*;
@@ -17,9 +18,10 @@ public class WeatherApplication extends Application {
 		
 		// MODEL
 		WeatherSystem weatherModel = new WeatherSystem("Oakville,CA");
+		DayForecastSystem forecastModel = new DayForecastSystem(weatherModel);
 		
 		// VIEW setup
-		WeatherSystemView weatherView = new WeatherSystemView(window);
+		WeatherSystemView weatherView = new WeatherSystemView(window, forecastModel);
 		LoginPageView loginView = new LoginPageView(window);
 		SignupPageView signupView = new SignupPageView(window);
 		
@@ -30,10 +32,14 @@ public class WeatherApplication extends Application {
 		
 		// MODEL -> VIEW hookup
 		weatherModel.attach(weatherView);
+		forecastModel.attach(weatherView);
 		
 		loginView.accountButton.setOnAction(sceneController);
 		loginView.loginButton.setOnAction(new LoginController
 				(loginView.getUsername(), loginView.getPassword(), sceneController));
+		
+		weatherView.searchButton.setOnAction(new LoadWeatherController
+				(weatherView.locationField, forecastModel));
 		
 		
 		//routes to login screen if user already has an account
