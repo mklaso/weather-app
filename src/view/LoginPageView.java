@@ -32,20 +32,20 @@ public class LoginPageView extends FlowPane implements ViewType {
 		username.setPrefColumnCount(17);
 		username.setMinSize(30,  39);
 		username.setPromptText("enter your username");
-		username.setStyle(ButtonHighlighter.TEXT);
+		username.setStyle(StyleSetter.TEXT);
 		
 		password.setPrefColumnCount(17);
 		password.setMinSize(30,  39);
 		password.setPromptText("enter your password");
-		password.setStyle(ButtonHighlighter.TEXT);
+		password.setStyle(StyleSetter.TEXT);
 		
 		HBox buttonsBox = new HBox(10);
 		
 		loginButton.setMinSize(60, 30);
-		loginButton.setStyle(ButtonHighlighter.REGULAR);
+		loginButton.setStyle(StyleSetter.REGULAR);
 		
 		accountButton.setMinSize(200, 30);
-		accountButton.setStyle(ButtonHighlighter.REGULAR);
+		accountButton.setStyle(StyleSetter.REGULAR);
 		
 		buttonsBox.getChildren().addAll(loginButton, accountButton);
 		buttonsBox.setAlignment(Pos.CENTER);
@@ -59,8 +59,8 @@ public class LoginPageView extends FlowPane implements ViewType {
 		
 		this.getChildren().addAll(loginBox);
 		
-		ButtonHighlighter.modifyColour(loginButton, ButtonHighlighter.REGULAR, ButtonHighlighter.HIGHLIGHT);
-		ButtonHighlighter.modifyColour(accountButton, ButtonHighlighter.REGULAR, ButtonHighlighter.HIGHLIGHT);
+		StyleSetter.modifyColour(loginButton, StyleSetter.REGULAR, StyleSetter.HIGHLIGHT);
+		StyleSetter.modifyColour(accountButton, StyleSetter.REGULAR, StyleSetter.HIGHLIGHT);
 
 	}
 	

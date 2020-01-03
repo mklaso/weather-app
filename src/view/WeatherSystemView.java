@@ -40,12 +40,12 @@ public class WeatherSystemView extends FlowPane implements Observer {
 		locationField.setPrefColumnCount(17);
 		locationField.setMinSize(30,  39);
 		locationField.setPromptText("enter a location (e.g: Oakville, CA)");
-		locationField.setStyle(ButtonHighlighter.TEXT);
+		locationField.setStyle(StyleSetter.TEXT);
 		
 		searchButton.setMinSize(30, 30);
-		searchButton.setStyle(ButtonHighlighter.REGULAR);
+		searchButton.setStyle(StyleSetter.REGULAR);
 		goBackButton.setMinSize(30, 30);
-		goBackButton.setStyle(ButtonHighlighter.REGULAR);
+		goBackButton.setStyle(StyleSetter.REGULAR);
 		
 		//allows enter button to be used for making a search
 		locationField.setOnKeyPressed(new EnterKeypressHandler(searchButton));
@@ -55,8 +55,8 @@ public class WeatherSystemView extends FlowPane implements Observer {
 		
 		this.getChildren().addAll(wholeBox);
 		
-		ButtonHighlighter.modifyColour(searchButton, ButtonHighlighter.REGULAR, ButtonHighlighter.HIGHLIGHT);
-		ButtonHighlighter.modifyColour(goBackButton, ButtonHighlighter.REGULAR, ButtonHighlighter.HIGHLIGHT);
+		StyleSetter.modifyColour(searchButton, StyleSetter.REGULAR, StyleSetter.HIGHLIGHT);
+		StyleSetter.modifyColour(goBackButton, StyleSetter.REGULAR, StyleSetter.HIGHLIGHT);
 	}
 	
 	public VBox getCurrentWeather() {

@@ -33,19 +33,19 @@ public class SignupPageView extends FlowPane implements ViewType {
 		username.setPrefColumnCount(17);
 		username.setMinSize(30,  39);
 		username.setPromptText("enter your desired username");
-		username.setStyle(ButtonHighlighter.TEXT);
+		username.setStyle(StyleSetter.TEXT);
 		
 		password.setPrefColumnCount(17);
 		password.setMinSize(30,  39);
 		password.setPromptText("enter your desired password");
-		password.setStyle(ButtonHighlighter.TEXT);
+		password.setStyle(StyleSetter.TEXT);
 		
 		HBox buttonsBox = new HBox(10);
 		signupButton.setMinSize(60, 30);
-		signupButton.setStyle(ButtonHighlighter.REGULAR);
+		signupButton.setStyle(StyleSetter.REGULAR);
 		
 		accountButton.setMinHeight(30);
-		accountButton.setStyle(ButtonHighlighter.REGULAR);
+		accountButton.setStyle(StyleSetter.REGULAR);
 		
 		buttonsBox.getChildren().addAll(signupButton, accountButton);
 		buttonsBox.setAlignment(Pos.CENTER);
@@ -58,8 +58,8 @@ public class SignupPageView extends FlowPane implements ViewType {
 		
 		this.getChildren().addAll(loginBox);
 		
-		ButtonHighlighter.modifyColour(signupButton, ButtonHighlighter.REGULAR, ButtonHighlighter.HIGHLIGHT);
-		ButtonHighlighter.modifyColour(accountButton, ButtonHighlighter.REGULAR, ButtonHighlighter.HIGHLIGHT);
+		StyleSetter.modifyColour(signupButton, StyleSetter.REGULAR, StyleSetter.HIGHLIGHT);
+		StyleSetter.modifyColour(accountButton, StyleSetter.REGULAR, StyleSetter.HIGHLIGHT);
 	}
 	
 	public TextField getUsername() {
