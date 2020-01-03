@@ -11,7 +11,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class SignupPageView extends FlowPane {
+public class SignupPageView extends FlowPane implements ViewType {
 	
 	private Stage stage;
 	public Button signupButton = new Button("Signup");

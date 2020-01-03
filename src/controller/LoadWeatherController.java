@@ -8,25 +8,24 @@ import model.WeatherSystem;
 
 public class LoadWeatherController implements EventHandler<ActionEvent> {
 	
-	private TextField question;
+	private TextField searchResult;
 	private DayForecastSystem dfs;
 	
-	public LoadWeatherController(TextField question, DayForecastSystem dfs) {
-		this.question = question;
+	public LoadWeatherController(TextField searchResult, DayForecastSystem dfs) {
+		this.searchResult = searchResult;
 		this.dfs = dfs;
 	}
 	
 	@Override
 	public void handle(ActionEvent event) {
 		
-		String location = question.getText();
+		String location = searchResult.getText();
 
 		WeatherSystem ws = this.dfs.getWeatherSystem();
 		ws.setLocation(location);
 		ws.get5DayForecast();
 		
 	    this.dfs.updateWeatherSystem(ws);
-		//ws.printWeatherData();
 	    this.dfs.print5DayForecast();
 
 		if (this.dfs.forecastDataExists()) {

@@ -15,6 +15,7 @@ public class SceneChangeController implements EventHandler<ActionEvent> {
 	WeatherSystemView weatherView;
 	LoginPageView loginView;
 	SignupPageView signupView;
+	
 	public SceneChangeController(WeatherSystemView weatherView,
 			LoginPageView loginView, SignupPageView signupView) {
 		this.weatherView = weatherView;
@@ -48,29 +49,37 @@ public class SceneChangeController implements EventHandler<ActionEvent> {
 	public Scene getSceneReference(int n) {
 		return this.sceneReferences.get(n);
 	}
+	
+	public void setWindowDimensions(double height, double width) {
+		this.window.setMinWidth(width);
+		this.window.setMaxWidth(width);
+		this.window.setMinHeight(height);
+		this.window.setMaxHeight(height);
+	}
+	
+	public void setWindowAttributes(ViewType viewType, double height, double width, int sceneNumber, String titleName) {
+		this.window.setScene(getSceneReference(sceneNumber));
+		viewType.getUsername().clear();
+		viewType.getPassword().clear();
+		this.window.setTitle(titleName);
+		this.setWindowDimensions(height, width);
+	}
 
 	@Override
 	public void handle(ActionEvent event) {
 		String whichButton = ((Button)event.getSource()).getText();
 			//routes to signup page
 		if (whichButton.equals("Create an account")) {
-			this.window.setScene(getSceneReference(1));
-			loginView.getUsername().clear();
-			loginView.getPassword().clear();
-			this.window.setTitle("Signup");
+			this.setWindowAttributes(loginView, 266.3999938964844, 438.79998779296875, 1, "Signup");
+
 			//routes to login page
 		} else if (whichButton.equals("Already have an account?")) {
-			this.window.setScene(getSceneReference(0));
-			signupView.getUsername().clear();
-			signupView.getPassword().clear();
-			this.window.setTitle("Login");
+			this.setWindowAttributes(signupView, 266.3999938964844, 436.79998779296875, 0, "Login");
 			
 			//routes to login page (presumably from a logout button on weather page)
 		} else {
-			this.window.setScene(getSceneReference(0));
+			this.setWindowAttributes(signupView, 266.3999938964844, 436.79998779296875, 0, "Login");
 			weatherView.locationField.clear();
-			this.window.setTitle("Login");
 		}
-		
 	}
 }

@@ -17,7 +17,7 @@ public class WeatherApplication extends Application {
 		window = stage;
 		
 		// MODEL
-		WeatherSystem weatherModel = new WeatherSystem("");
+		WeatherSystem weatherModel = new WeatherSystem("Oakville, CA");
 		DayForecastSystem forecastModel = new DayForecastSystem(weatherModel);
 		
 		// VIEW setup
