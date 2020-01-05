@@ -1,14 +1,19 @@
 package view;
 
 import javafx.stage.Stage;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
 import controller.EnterKeypressHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
@@ -25,6 +30,8 @@ public class WeatherSystemView extends FlowPane implements Observer {
 	public Button searchButton = new Button("Get Weather");
 	private HBox forecastBox = new HBox(5);
 	private VBox weatherBox = new VBox(10);
+	private ImageView imageView = new ImageView();
+	
 	
 	public WeatherSystemView(Stage stage, DayForecastSystem dfs) {
 		this.stage = stage;
@@ -88,11 +95,23 @@ public class WeatherSystemView extends FlowPane implements Observer {
 	}
 	
 	public VBox getForecastDay(int n) {
+		FileInputStream inputstream;
+		try {
+			inputstream = new FileInputStream("C:/Users/mklas/Desktop/weather-app/src/view/icons8_clouds_125px.png");
+			Image image = new Image(inputstream); 
+			imageView = new ImageView(image);
+			imageView.setFitHeight(50.0);
+			imageView.setFitWidth(50.0);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		VBox dayForecast = new VBox();
 		Label day = new Label(this.dfs.getDay());
 		Label temp = new Label(this.dfs.getTemp());
 		Label weather = new Label(this.dfs.getWeather());
-		dayForecast.getChildren().addAll(day, temp, weather);
+		dayForecast.getChildren().addAll(day, imageView, temp, weather);
 		
 		return dayForecast;
 	}
