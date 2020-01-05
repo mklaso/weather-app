@@ -4,6 +4,8 @@ import javafx.stage.Stage;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import controller.EnterKeypressHandler;
 import javafx.geometry.Insets;
@@ -31,6 +33,10 @@ public class WeatherSystemView extends FlowPane implements Observer {
 	private HBox forecastBox = new HBox(5);
 	private VBox weatherBox = new VBox(10);
 	private ImageView imageView = new ImageView();
+	
+	//want to store the daily/current forecast on the left of the hbox, and a big image of the weather condition on right
+	//need to set this up, change the update() to add both the vbox of the weather conditions, as well as the image
+	private HBox weatherHBOX = new HBox(5);
 	
 	
 	public WeatherSystemView(Stage stage, DayForecastSystem dfs) {
@@ -95,9 +101,43 @@ public class WeatherSystemView extends FlowPane implements Observer {
 	}
 	
 	public VBox getForecastDay(int n) {
+		
+		
+		VBox dayForecast = new VBox();
+		Label day = new Label(this.dfs.getDay());
+		Label temp = new Label(this.dfs.getTemp());
+		Label weather = new Label(this.dfs.getWeather());
+		this.setWeatherImage();
+		dayForecast.getChildren().addAll(day, imageView, temp, weather);
+		
+		return dayForecast;
+	}
+	
+	public void setWeatherImage() {
+		Pattern snow = Pattern.compile("^.*(snow).*$");
+		Pattern rain = Pattern.compile("^.*(rain).*$");
+		Pattern clearsky = Pattern.compile("^.*(sky).*$");
+		Pattern thunder = Pattern.compile("^.*(thunder).*$");
+		Pattern clouds = Pattern.compile("^.*(cloud).*$");
+		
+		String weatherCondition = this.dfs.getWeather();
+		
 		FileInputStream inputstream;
+		//try to get file paths in a better way
 		try {
-			inputstream = new FileInputStream("C:/Users/mklas/Desktop/weather-app/src/view/icons8_clouds_125px.png");
+			if (snow.matcher(weatherCondition).matches()) {
+				inputstream = new FileInputStream("C:/Users/mklas/Desktop/weather-app/src/view/icons8_snowflake_125px.png");
+			} else if (rain.matcher(weatherCondition).matches()) {
+				inputstream = new FileInputStream("C:/Users/mklas/Desktop/weather-app/src/view/icons8_rainfall_125px.png");
+			} else if (thunder.matcher(weatherCondition).matches()) {
+				inputstream = new FileInputStream("C:/Users/mklas/Desktop/weather-app/src/view/icons8_storm_125px.png");
+			} else if (clouds.matcher(weatherCondition).matches()) {
+				inputstream = new FileInputStream("C:/Users/mklas/Desktop/weather-app/src/view/icons8_clouds_125px.png");
+			} else if (clearsky.matcher(weatherCondition).matches()) {
+				inputstream = new FileInputStream("C:/Users/mklas/Desktop/weather-app/src/view/icons8_sun_125px.png");
+			} else {
+				inputstream = new FileInputStream("C:/Users/mklas/Desktop/weather-app/src/view/icons8_sun_125px.png");
+			}
 			Image image = new Image(inputstream); 
 			imageView = new ImageView(image);
 			imageView.setFitHeight(50.0);
@@ -106,14 +146,6 @@ public class WeatherSystemView extends FlowPane implements Observer {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		VBox dayForecast = new VBox();
-		Label day = new Label(this.dfs.getDay());
-		Label temp = new Label(this.dfs.getTemp());
-		Label weather = new Label(this.dfs.getWeather());
-		dayForecast.getChildren().addAll(day, imageView, temp, weather);
-		
-		return dayForecast;
 	}
 	
 	/**
