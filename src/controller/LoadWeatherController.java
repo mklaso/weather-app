@@ -23,6 +23,7 @@ public class LoadWeatherController implements EventHandler<ActionEvent> {
 
 		WeatherSystem ws = this.dfs.getWeatherSystem();
 		ws.setLocation(location);
+		//ws.obtainWeatherData();
 		ws.get5DayForecast();
 		
 	    this.dfs.updateWeatherSystem(ws);
