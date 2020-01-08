@@ -78,6 +78,22 @@ public class WeatherSystemView extends FlowPane implements Observer {
 		StyleSetter.modifyColour(searchButton, StyleSetter.REGULAR, StyleSetter.HIGHLIGHT);
 		StyleSetter.modifyColour(goBackButton, StyleSetter.REGULAR, StyleSetter.HIGHLIGHT);
 		
+		FileInputStream inputstream;
+
+
+		try {
+			inputstream = new FileInputStream(path + "giphy.gif");
+			Image image = new Image(inputstream); 
+			ImageView currentView = new ImageView(image);
+			currentView.setFitHeight(200.0);
+			currentView.setFitWidth(200.0);
+			this.getChildren().add(currentView);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 	}
 	
 	public VBox getCurrentWeather() {
