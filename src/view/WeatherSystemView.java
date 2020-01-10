@@ -54,6 +54,11 @@ public class WeatherSystemView extends FlowPane implements Observer {
 		this.setStyle("-fx-background-color:"
 				+ "linear-gradient(from 25% 25% to 100% 100%, rgb(177, 249, 254), rgb(226, 166, 255));"
 				+ " -fx-border-color:black;");
+		
+		this.stage.setMinWidth(600);
+		this.stage.setMaxWidth(600);
+		this.stage.setMinHeight(600);
+		this.stage.setMaxHeight(600);
 
 		HBox searchBox = new HBox(5);
 		
@@ -78,20 +83,20 @@ public class WeatherSystemView extends FlowPane implements Observer {
 		StyleSetter.modifyColour(searchButton, StyleSetter.REGULAR, StyleSetter.HIGHLIGHT);
 		StyleSetter.modifyColour(goBackButton, StyleSetter.REGULAR, StyleSetter.HIGHLIGHT);
 		
-		FileInputStream inputstream;
-
-
-		try {
-			inputstream = new FileInputStream(path + "giphy.gif");
-			Image image = new Image(inputstream); 
-			ImageView currentView = new ImageView(image);
-			currentView.setFitHeight(200.0);
-			currentView.setFitWidth(200.0);
-			this.getChildren().add(currentView);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		FileInputStream inputstream;
+//
+//
+//		try {
+//			inputstream = new FileInputStream(path + "giphy.gif");
+//			Image image = new Image(inputstream); 
+//			ImageView currentView = new ImageView(image);
+//			currentView.setFitHeight(200.0);
+//			currentView.setFitWidth(200.0);
+//			this.getChildren().add(currentView);
+//		} catch (FileNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		
 		
 	}
