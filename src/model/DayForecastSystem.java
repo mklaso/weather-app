@@ -61,7 +61,6 @@ public class DayForecastSystem extends Observable {
 			setDay(this.forecastData.get(dayNumber).get(0));
 			setTemp(this.forecastData.get(dayNumber).get(1));
 			setWeather(this.forecastData.get(dayNumber).get(2));
-			this.notifyObservers();
 		} else {
 			System.out.print("Forecast data list is empty.");
 		}

@@ -195,8 +195,7 @@ public class WeatherSystemView extends FlowPane implements Observer {
 		return imageView;
 	}
 
-	@Override
-	public void update(Observable o) {
+	public void addToView() {
 		
 		//handles weather
 		VBox weather = new VBox(getCurrentWeather());
@@ -228,5 +227,20 @@ public class WeatherSystemView extends FlowPane implements Observer {
 		if (!this.wholeBox.getChildren().contains(forecastBox)) {
 			this.wholeBox.getChildren().addAll(forecastBox);
 		}
+		
+	}
+
+	@Override
+	public void update(Observable o) {
+		this.dfs.setForecastDay(1);
+		this.addToView();
+		this.dfs.setForecastDay(2);
+		this.addToView();
+		this.dfs.setForecastDay(3);
+		this.addToView();
+		this.dfs.setForecastDay(4);
+		this.addToView();
+		this.dfs.setForecastDay(5);
+		this.addToView();
 	}
 }
