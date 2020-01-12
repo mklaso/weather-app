@@ -61,17 +61,14 @@ public class WeatherSystemView extends FlowPane implements Observer {
 		this.stage.setMaxWidth(600);
 		this.stage.setMinHeight(600);
 		this.stage.setMaxHeight(600);
-		ToggleButton tb = new ToggleButton("°C");
-		this.getChildren().add(tb);
-		//tb.setSelected(true);
-		ToggleButton tb2 = new ToggleButton("°F");
-		this.getChildren().add(tb2);
-		tb2.requestFocus();
-		//tb.setSelected(true);
 		
+		ToggleButton tb = new ToggleButton("°C");
+		ToggleButton tb2 = new ToggleButton("°F");
+		this.getChildren().addAll(tb, tb2);
 		tb.setOnAction(new ToggleButtonController(tb, tb2));
 		tb2.setOnAction(new ToggleButtonController(tb2, tb));
 
+		
 		HBox searchBox = new HBox(5);
 		
 		locationField.setPrefColumnCount(17);
@@ -206,9 +203,8 @@ public class WeatherSystemView extends FlowPane implements Observer {
 		}
 		return imageView;
 	}
-
-	@Override
-	public void update(Observable o) {
+	
+	public void addToView() {
 		
 		//handles weather
 		VBox weather = new VBox(getCurrentWeather());
@@ -240,5 +236,20 @@ public class WeatherSystemView extends FlowPane implements Observer {
 		if (!this.wholeBox.getChildren().contains(forecastBox)) {
 			this.wholeBox.getChildren().addAll(forecastBox);
 		}
+		
+	}
+
+	@Override
+	public void update(Observable o) {
+		this.dfs.setForecastDay(1);
+		this.addToView();
+		this.dfs.setForecastDay(2);
+		this.addToView();
+		this.dfs.setForecastDay(3);
+		this.addToView();
+		this.dfs.setForecastDay(4);
+		this.addToView();
+		this.dfs.setForecastDay(5);
+		this.addToView();
 	}
 }

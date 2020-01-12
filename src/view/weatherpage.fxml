@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.effect.*?>
@@ -17,67 +19,187 @@
          <children>
             <VBox prefHeight="200.0" prefWidth="100.0">
                <children>
-                  <VBox alignment="CENTER" maxHeight="-Infinity" prefHeight="495.0" prefWidth="815.0" spacing="5.0" style="-fx-background-color: pink;">
+                  <VBox alignment="CENTER" maxHeight="-Infinity" prefHeight="495.0" prefWidth="815.0" style="-fx-background-color: linear-gradient(to right, rgb(142, 249, 236), rgb(143, 201, 243));;">
                      <children>
-                        <HBox alignment="CENTER" maxWidth="-Infinity" prefHeight="100.0" prefWidth="491.0" style="-fx-background-color: lavender;">
+                        <HBox alignment="CENTER" maxWidth="-Infinity" prefHeight="97.0" prefWidth="527.0" spacing="10.0" style="-fx-background-color: transparent;">
                            <VBox.margin>
                               <Insets />
                            </VBox.margin>
                            <children>
-                              <TextField prefHeight="47.0" prefWidth="252.0" />
-                              <ToggleButton mnemonicParsing="false" text="ToggleButton" />
+                              <ImageView>
+                                 <image>
+                                    <Image url="@../../../icons8_menu_30px_1.png" />
+                                 </image>
+                                 <HBox.margin>
+                                    <Insets right="10.0" />
+                                 </HBox.margin>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </ImageView>
+                              <TextField prefHeight="47.0" prefWidth="252.0" promptText="enter a location" style="-fx-font-size: 20; -fx-background-radius: 30;" />
+                              <ImageView>
+                                 <image>
+                                    <Image url="@../../../icons8_plus_math_40px.png" />
+                                 </image>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </ImageView>
+                              <HBox maxHeight="-Infinity" prefHeight="47.0" prefWidth="85.0">
+                                 <children>
+                                    <ToggleButton mnemonicParsing="false" prefHeight="47.0" prefWidth="48.0" style="-fx-font-size: 18; -fx-background-radius: 0; -fx-background-color: white; -fx-border-color: grey;" text="°C">
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor>
+                                    </ToggleButton>
+                                    <ToggleButton mnemonicParsing="false" prefHeight="47.0" prefWidth="46.0" style="-fx-font-size: 18; -fx-background-radius: 0; -fx-background-color: white; -fx-border-color: grey;" text="°F">
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor>
+                                    </ToggleButton>
+                                 </children>
+                              </HBox>
                            </children>
                         </HBox>
-                        <VBox maxWidth="-Infinity" prefHeight="380.0" prefWidth="637.0" style="-fx-background-color: lavender;" />
+                        <VBox alignment="CENTER" maxWidth="-Infinity" prefHeight="391.0" prefWidth="637.0" spacing="5.0" style="-fx-background-color: transparent;">
+                           <children>
+                              <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="58.0" prefWidth="339.0" spacing="15.0">
+                                 <children>
+                                    <ImageView fitHeight="30.0" fitWidth="30.0">
+                                       <image>
+                                          <Image url="@../../../icons8_marker_50px.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Label prefHeight="40.0" prefWidth="194.0" style="-fx-font-size: 28; -fx-font-weight: BOLD;" text="Oakville, CA" />
+                                 </children>
+                              </HBox>
+                              <Label style="-fx-font-size: 18;" text="Monday" />
+                              <Label style="-fx-font-size: 18;" text="02/04/2020" />
+                              <Label style="-fx-font-size: 18;" text="2:07 pm" />
+                              <Label alignment="CENTER" maxHeight="-Infinity" prefHeight="37.0" prefWidth="95.0" style="-fx-font-size: 60;" text="8°" />
+                              <Label style="-fx-font-size: 22;" text="scattered clouds" />
+                              <Label style="-fx-font-size: 18;" text="Feels like 3°" />
+                              <Label style="-fx-font-size: 18;" text="97% Humidity" />
+                              <Label style="-fx-font-size: 18;" text="Wind speeds of 6.7m/s" />
+                           </children>
+                           <VBox.margin>
+                              <Insets bottom="10.0" />
+                           </VBox.margin>
+                           <padding>
+                              <Insets bottom="20.0" />
+                           </padding>
+                        </VBox>
                      </children>
                   </VBox>
-                  <HBox alignment="CENTER" prefHeight="220.0" prefWidth="815.0" style="-fx-background-color: lavender;">
+                  <HBox alignment="CENTER" prefHeight="220.0" prefWidth="815.0" style="-fx-background-color: linear-gradient(to left, rgb(212, 122, 230), rgb(252, 222, 124));;">
                      <children>
-                        <VBox maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="220.0" prefWidth="145.0" style="-fx-background-color: white;">
+                        <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="220.0" prefWidth="145.0" spacing="5.0" style="-fx-background-color: beige;">
                            <effect>
                               <DropShadow />
                            </effect>
                            <HBox.margin>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </HBox.margin>
+                           <children>
+                              <Label style="-fx-font-size: 18;" text="Monday" />
+                              <ImageView fitHeight="75.0" fitWidth="75.0">
+                                 <image>
+                                    <Image url="@../../../icons8_sun_100px.png" />
+                                 </image>
+                              </ImageView>
+                              <Label style="-fx-font-size: 18;" text="7°" />
+                              <Label style="-fx-font-size: 18;" text="clear sky" />
+                           </children>
                         </VBox>
-                        <VBox maxWidth="-Infinity" prefHeight="220.0" prefWidth="145.0" style="-fx-background-color: white;">
+                        <VBox alignment="CENTER" maxWidth="-Infinity" prefHeight="220.0" prefWidth="145.0" spacing="5.0" style="-fx-background-color: beige;">
                            <effect>
                               <DropShadow />
                            </effect>
                            <HBox.margin>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </HBox.margin>
+                           <children>
+                              <Label style="-fx-font-size: 18;" text="Monday" />
+                              <ImageView fitHeight="75.0" fitWidth="75.0">
+                                 <image>
+                                    <Image url="@../../../icons8_sun_100px.png" />
+                                 </image>
+                              </ImageView>
+                              <Label style="-fx-font-size: 18;" text="7°" />
+                              <Label style="-fx-font-size: 18;" text="clear sky" />
+                           </children>
                         </VBox>
-                        <VBox maxWidth="-Infinity" prefHeight="220.0" prefWidth="145.0" style="-fx-background-color: white;">
+                        <VBox alignment="CENTER" maxWidth="-Infinity" prefHeight="220.0" prefWidth="145.0" spacing="5.0" style="-fx-background-color: beige;">
                            <effect>
                               <DropShadow />
                            </effect>
                            <HBox.margin>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </HBox.margin>
+                           <children>
+                              <Label style="-fx-font-size: 18;" text="Monday" />
+                              <ImageView fitHeight="75.0" fitWidth="75.0">
+                                 <image>
+                                    <Image url="@../../../icons8_sun_100px.png" />
+                                 </image>
+                              </ImageView>
+                              <Label style="-fx-font-size: 18;" text="7°" />
+                              <Label style="-fx-font-size: 18;" text="clear sky" />
+                           </children>
                         </VBox>
-                        <VBox maxWidth="-Infinity" prefHeight="220.0" prefWidth="145.0" style="-fx-background-color: white;">
+                        <VBox alignment="CENTER" maxWidth="-Infinity" prefHeight="220.0" prefWidth="145.0" spacing="5.0" style="-fx-background-color: beige;">
                            <effect>
                               <DropShadow />
                            </effect>
                            <HBox.margin>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </HBox.margin>
+                           <children>
+                              <Label style="-fx-font-size: 18;" text="Monday" />
+                              <ImageView fitHeight="75.0" fitWidth="75.0">
+                                 <image>
+                                    <Image url="@../../../icons8_sun_100px.png" />
+                                 </image>
+                              </ImageView>
+                              <Label style="-fx-font-size: 18;" text="7°" />
+                              <Label style="-fx-font-size: 18;" text="clear sky" />
+                           </children>
                         </VBox>
-                        <VBox maxWidth="-Infinity" prefHeight="220.0" prefWidth="145.0" style="-fx-background-color: white;">
+                        <VBox alignment="CENTER" maxWidth="-Infinity" prefHeight="220.0" prefWidth="145.0" spacing="5.0" style="-fx-background-color: beige;">
                            <effect>
                               <DropShadow />
                            </effect>
                            <HBox.margin>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </HBox.margin>
+                           <children>
+                              <Label style="-fx-font-size: 18;" text="Monday" />
+                              <ImageView fitHeight="75.0" fitWidth="75.0">
+                                 <image>
+                                    <Image url="@../../../icons8_sun_100px.png" />
+                                 </image>
+                              </ImageView>
+                              <Label style="-fx-font-size: 18;" text="7°" />
+                              <Label style="-fx-font-size: 18;" text="clear sky" />
+                           </children>
                         </VBox>
                      </children>
+                     <effect>
+                        <DropShadow />
+                     </effect>
                   </HBox>
                </children>
             </VBox>
          </children>
       </StackPane>
+      <ImageView fitHeight="35.0" fitWidth="35.0" layoutX="10.0" layoutY="10.0" AnchorPane.leftAnchor="440.0" AnchorPane.topAnchor="37.5">
+         <image>
+            <Image url="@../../../icons8_search_100px.png" />
+         </image>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </ImageView>
    </children>
 </AnchorPane>
