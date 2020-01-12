@@ -9,12 +9,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import controller.EnterKeypressHandler;
+import controller.ToggleButtonController;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
@@ -54,7 +56,20 @@ public class WeatherSystemView extends FlowPane implements Observer {
 		this.setStyle("-fx-background-color:"
 				+ "linear-gradient(from 25% 25% to 100% 100%, rgb(177, 249, 254), rgb(226, 166, 255));"
 				+ " -fx-border-color:black;");
+		
+		this.stage.setMinWidth(600);
+		this.stage.setMaxWidth(600);
+		this.stage.setMinHeight(600);
+		this.stage.setMaxHeight(600);
+		
+		//handles button toggles
+		ToggleButton tb = new ToggleButton("°C");
+		ToggleButton tb2 = new ToggleButton("°F");
+		this.getChildren().addAll(tb, tb2);
+		tb.setOnAction(new ToggleButtonController(tb, tb2));
+		tb2.setOnAction(new ToggleButtonController(tb2, tb));
 
+		
 		HBox searchBox = new HBox(5);
 		
 		locationField.setPrefColumnCount(17);
@@ -78,20 +93,20 @@ public class WeatherSystemView extends FlowPane implements Observer {
 		StyleSetter.modifyColour(searchButton, StyleSetter.REGULAR, StyleSetter.HIGHLIGHT);
 		StyleSetter.modifyColour(goBackButton, StyleSetter.REGULAR, StyleSetter.HIGHLIGHT);
 		
-		FileInputStream inputstream;
-
-
-		try {
-			inputstream = new FileInputStream(path + "giphy.gif");
-			Image image = new Image(inputstream); 
-			ImageView currentView = new ImageView(image);
-			currentView.setFitHeight(200.0);
-			currentView.setFitWidth(200.0);
-			this.getChildren().add(currentView);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		FileInputStream inputstream;
+//
+//
+//		try {
+//			inputstream = new FileInputStream(path + "giphy.gif");
+//			Image image = new Image(inputstream); 
+//			ImageView currentView = new ImageView(image);
+//			currentView.setFitHeight(200.0);
+//			currentView.setFitWidth(200.0);
+//			this.getChildren().add(currentView);
+//		} catch (FileNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		
 		
 	}
@@ -137,6 +152,7 @@ public class WeatherSystemView extends FlowPane implements Observer {
 		imageView = this.getWeatherImage(this.dfs.getWeather());
 		dayForecast.getChildren().addAll(day, imageView, temp, weather);
 		dayForecast.setPadding(new Insets(40, 10, 10, 10));
+		dayForecast.setAlignment(Pos.CENTER);
 		
 		return dayForecast;
 	}
