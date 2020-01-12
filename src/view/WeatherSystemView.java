@@ -9,12 +9,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import controller.EnterKeypressHandler;
+import controller.ToggleButtonController;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
@@ -59,6 +61,16 @@ public class WeatherSystemView extends FlowPane implements Observer {
 		this.stage.setMaxWidth(600);
 		this.stage.setMinHeight(600);
 		this.stage.setMaxHeight(600);
+		ToggleButton tb = new ToggleButton("°C");
+		this.getChildren().add(tb);
+		//tb.setSelected(true);
+		ToggleButton tb2 = new ToggleButton("°F");
+		this.getChildren().add(tb2);
+		tb2.requestFocus();
+		//tb.setSelected(true);
+		
+		tb.setOnAction(new ToggleButtonController(tb, tb2));
+		tb2.setOnAction(new ToggleButtonController(tb2, tb));
 
 		HBox searchBox = new HBox(5);
 		
@@ -99,6 +111,16 @@ public class WeatherSystemView extends FlowPane implements Observer {
 //		}
 		
 		
+	}
+	
+	public void setSwitchFocus(ToggleButton button1, ToggleButton button2) {
+		if (button1.isPressed()) {
+			button2.setSelected(false);
+		}
+		
+		if (button2.isPressed()) {
+			button1.setSelected(false);
+		}
 	}
 	
 	public VBox getCurrentWeather() {
@@ -142,6 +164,7 @@ public class WeatherSystemView extends FlowPane implements Observer {
 		imageView = this.getWeatherImage(this.dfs.getWeather());
 		dayForecast.getChildren().addAll(day, imageView, temp, weather);
 		dayForecast.setPadding(new Insets(40, 10, 10, 10));
+		dayForecast.setAlignment(Pos.CENTER);
 		
 		return dayForecast;
 	}

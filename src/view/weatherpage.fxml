@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.effect.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane prefHeight="725.0" prefWidth="825.0" style="-fx-background-color: transparent;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8">
+   <children>
+      <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: orange;" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+         <effect>
+            <DropShadow />
+         </effect>
+         <children>
+            <VBox prefHeight="200.0" prefWidth="100.0">
+               <children>
+                  <VBox alignment="CENTER" maxHeight="-Infinity" prefHeight="495.0" prefWidth="815.0" spacing="5.0" style="-fx-background-color: pink;">
+                     <children>
+                        <HBox alignment="CENTER" maxWidth="-Infinity" prefHeight="100.0" prefWidth="491.0" style="-fx-background-color: lavender;">
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                           <children>
+                              <TextField prefHeight="47.0" prefWidth="252.0" />
+                              <ToggleButton mnemonicParsing="false" text="ToggleButton" />
+                           </children>
+                        </HBox>
+                        <VBox maxWidth="-Infinity" prefHeight="380.0" prefWidth="637.0" style="-fx-background-color: lavender;" />
+                     </children>
+                  </VBox>
+                  <HBox alignment="CENTER" prefHeight="220.0" prefWidth="815.0" style="-fx-background-color: lavender;">
+                     <children>
+                        <VBox maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="220.0" prefWidth="145.0" style="-fx-background-color: white;">
+                           <effect>
+                              <DropShadow />
+                           </effect>
+                           <HBox.margin>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </HBox.margin>
+                        </VBox>
+                        <VBox maxWidth="-Infinity" prefHeight="220.0" prefWidth="145.0" style="-fx-background-color: white;">
+                           <effect>
+                              <DropShadow />
+                           </effect>
+                           <HBox.margin>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </HBox.margin>
+                        </VBox>
+                        <VBox maxWidth="-Infinity" prefHeight="220.0" prefWidth="145.0" style="-fx-background-color: white;">
+                           <effect>
+                              <DropShadow />
+                           </effect>
+                           <HBox.margin>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </HBox.margin>
+                        </VBox>
+                        <VBox maxWidth="-Infinity" prefHeight="220.0" prefWidth="145.0" style="-fx-background-color: white;">
+                           <effect>
+                              <DropShadow />
+                           </effect>
+                           <HBox.margin>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </HBox.margin>
+                        </VBox>
+                        <VBox maxWidth="-Infinity" prefHeight="220.0" prefWidth="145.0" style="-fx-background-color: white;">
+                           <effect>
+                              <DropShadow />
+                           </effect>
+                           <HBox.margin>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </HBox.margin>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </StackPane>
+   </children>
+</AnchorPane>
