@@ -2,25 +2,24 @@ package controller;
 
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 
 public class EnterKeypressHandler implements EventHandler<KeyEvent>{
 	
-	private Button button;
+	private Button searchButton;
 	
-	public EnterKeypressHandler(Button button) {
-		this.button = button;
+	public EnterKeypressHandler(Button searchButton) {
+		this.searchButton = searchButton;
 	}
 	
 	@Override
 	public void handle(KeyEvent event) {
 		
-		//if enter key is pressed, it triggers the
-		//button's ActionEvent handler (LoginController or LoadWeatherController)
-		
 		if (event.getCode().equals(KeyCode.ENTER)) {
-			this.button.fire();
+			this.searchButton.fire();
 		}
 		
 	}

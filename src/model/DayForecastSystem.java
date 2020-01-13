@@ -9,6 +9,7 @@ public class DayForecastSystem extends Observable {
 	private String day;
 	private String temp;
 	private String weather;
+	private String date;
 	private int dayNumber;
 	
 	public DayForecastSystem(WeatherSystem ws) {
@@ -61,6 +62,8 @@ public class DayForecastSystem extends Observable {
 			setDay(this.forecastData.get(dayNumber).get(0));
 			setTemp(this.forecastData.get(dayNumber).get(1));
 			setWeather(this.forecastData.get(dayNumber).get(2));
+			setDate(this.forecastData.get(dayNumber).get(3));
+
 		} else {
 			System.out.print("Forecast data list is empty.");
 		}
@@ -80,6 +83,14 @@ public class DayForecastSystem extends Observable {
 		setInvalidDayForecast();
 		setInvalidDayForecast();
 		setInvalidDayForecast();
+	}
+	
+	public String getDate() {
+		return this.date;
+	}
+	
+	public void setDate(String date) {
+		this.date = date;
 	}
 	
 	public void setDay(String day) {
