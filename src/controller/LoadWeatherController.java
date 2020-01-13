@@ -13,7 +13,7 @@ public class LoadWeatherController implements EventHandler<ActionEvent> {
 	
 	public LoadWeatherController(TextField searchResult, DayForecastSystem dfs) {
 		this.searchResult = searchResult;
-		this.dfs = dfs;
+		this.setDfs(dfs);
 	}
 	
 	@Override
@@ -33,5 +33,13 @@ public class LoadWeatherController implements EventHandler<ActionEvent> {
 		} else  {
 			this.dfs.setInvalid5DayForecast();
 		}
+	}
+
+	public DayForecastSystem getDfs() {
+		return dfs;
+	}
+
+	public void setDfs(DayForecastSystem dfs) {
+		this.dfs = dfs;
 	}
 }

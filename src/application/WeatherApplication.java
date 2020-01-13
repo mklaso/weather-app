@@ -26,10 +26,14 @@ public class WeatherApplication extends Application {
 		// MODEL -> VIEW hookup
 		weatherModel.attach(weatherView);
 		forecastModel.attach(weatherView);
-	
-		weatherView.searchButton.setOnAction(new LoadWeatherController
-				(weatherView.locationField, forecastModel));
 		
+		LoadWeatherController weatherController = new LoadWeatherController
+				(weatherView.locationField, forecastModel);
+		
+		weatherView.searchButton.setOnAction(weatherController);
+		
+		weatherView.tb.setOnAction(new ToggleButtonController(weatherView.tb, weatherView.tb2, weatherController));
+		weatherView.tb2.setOnAction(new ToggleButtonController(weatherView.tb, weatherView.tb2, weatherController));
 		
 		// SCENES SETUP
 		Scene weatherScene = new Scene(weatherView);

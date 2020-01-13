@@ -35,6 +35,7 @@ public class WeatherSystem extends Observable {
 	public static final String IMPERIAL_MODE = "imperial";
 	public boolean valid = false;
 	private String currentDay;
+	private String speedUnit = "m/s";
 	
 	//add documentation later
 	public WeatherSystem(String location) {
@@ -45,6 +46,20 @@ public class WeatherSystem extends Observable {
 	
 	public void resetForecastData() {
 		this.forecastData.clear();
+	}
+	
+	public void resetWeatherData() {
+		this.measurementType = "&units=metric";
+		this.tempUnit = "°C";
+		this.result = "";
+		this.setURLString(WEATHER_MODE);
+		this.obtainWeatherData();
+	}
+	
+	public void refreshWeatherData() {
+		this.result = "";
+		this.setURLString(WEATHER_MODE);
+		this.obtainWeatherData();
 	}
 	
 	
@@ -62,11 +77,13 @@ public class WeatherSystem extends Observable {
 		if (unitType.toLowerCase().equals(METRIC_MODE)) {
 			this.measurementType = "&units=metric";
 			this.tempUnit = "°C";
+			this.speedUnit = "m/s";
 		} else if (unitType.toLowerCase().equals(IMPERIAL_MODE)) {
 			this.measurementType = "&units=imperial";
 			this.tempUnit = "°F";
+			this.speedUnit = "mph";
 		}
-		this.resetWeatherData();
+		this.refreshWeatherData();
 	}
 	
 	public static Map<String, Object> jsonToMap(String str) {
@@ -133,7 +150,7 @@ public class WeatherSystem extends Observable {
 				}
 			}
 			//back to default settings
-			this.resetWeatherData();
+			this.refreshWeatherData();
 		}
 	}
 	
@@ -207,17 +224,9 @@ public class WeatherSystem extends Observable {
 		this.result += s;
 	}
 	
-	public void resetWeatherData() {
-		this.measurementType = "&units=metric";
-		this.tempUnit = "°C";
-		this.result = "";
-		this.setURLString(WEATHER_MODE);
-		this.obtainWeatherData();
-	}
-	
 	public void setLocation(String s) {
 		this.location = s;
-		this.resetWeatherData();
+		this.refreshWeatherData();
 	}
 	
 	public String getLocation() {
@@ -266,7 +275,7 @@ public class WeatherSystem extends Observable {
 		
 		if (this.valid) {
 			Map<String, Object> wind = (Map<String, Object>)responseMap.get("wind");
-			return String.valueOf(wind.get("speed")) + "m/s";
+			return String.valueOf(wind.get("speed")) + this.speedUnit;
 		}
 		return "N/A";
 	}

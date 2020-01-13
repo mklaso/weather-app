@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.regex.Pattern;
 import controller.EnterKeypressHandler;
-import controller.ToggleButtonController;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -13,7 +12,6 @@ import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -48,6 +46,8 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 	Label humidity = new Label("N/A% Humidity");
 	Label wind = new Label("Wind speeds of N/A");
 	ImageView currentWeatherImage = new ImageView();
+	public Button tb = new Button("°C");
+	public Button tb2 = new Button("°F");
 	
 	//add these 4 somewhere in after the rest above is setup properly
 	Label minTemp = new Label("Min temperature: ");
@@ -65,6 +65,11 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 	public WeatherSystemView(Stage stage, DayForecastSystem dfs) {
 		this.stage = stage;
 		this.dfs = dfs;
+		
+		this.stage.setMinWidth(825);
+		this.stage.setMaxWidth(825);
+		this.stage.setMinHeight(725);
+		this.stage.setMaxHeight(725);
 		
 		this.setStyle("-fx-background-color: transparent;");
 		setSize(this, 825, 725);
@@ -134,18 +139,13 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 		toggleHbox.setAlignment(Pos.CENTER);
 		
 		//toggle setup
-		String toggleStyle = "-fx-font-size: 18; -fx-background-radius: 0; "
-				+ "-fx-background-color: white; -fx-border-color: grey;";
-		ToggleButton tb = new ToggleButton("°C");
-		ToggleButton tb2 = new ToggleButton("°F");
-		tb.setStyle(toggleStyle);
+
+		tb.setStyle(StyleSetter.toggleStyle);
 		tb.setCursor(Cursor.HAND);
-		tb2.setStyle(toggleStyle);
+		tb2.setStyle(StyleSetter.toggleStyle2);
 		tb2.setCursor(Cursor.HAND);
 		
 		toggleHbox.getChildren().addAll(tb, tb2);
-		tb.setOnAction(new ToggleButtonController(tb, tb2));
-		tb2.setOnAction(new ToggleButtonController(tb2, tb));
 		
 		searchBox.getChildren().addAll(menuImage, locationField, plusImage, toggleHbox);
 		
@@ -249,6 +249,8 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 		weather.setStyle(averageFontSize);
 		ImageView icon = new ImageView();
 		this.setForecastImage(icon, i);
+		
+		vbox.setOpacity(0.95);
 
 		vbox.setAlignment(Pos.CENTER);
 		vbox.setEffect(new DropShadow());

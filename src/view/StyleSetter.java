@@ -1,7 +1,5 @@
 package view;
-import javafx.scene.Cursor;
 import javafx.scene.control.Button;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class StyleSetter {
@@ -16,6 +14,12 @@ public class StyleSetter {
 	
 	public static final String TEXT = "-fx-font-size:16;"
 			+ " -fx-prompt-text-fill: derive(-fx-control-inner-background,-30%); }";
+	
+	public static final String toggleStyle = "-fx-font-size: 18; -fx-background-radius: 0; "
+			+ "-fx-background-color: grey; -fx-border-color: white;";
+	
+	public static final String toggleStyle2 = "-fx-font-size: 18; -fx-background-radius: 0; "
+			+ "-fx-background-color: white; -fx-border-color: grey;";
 	
 	public static void modifyColour(Button button, String oldStyle, String newStyle) {
 		button.setOnMouseEntered(

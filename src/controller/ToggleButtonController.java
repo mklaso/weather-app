@@ -2,36 +2,41 @@ package controller;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.control.ToggleButton;
+import javafx.scene.control.Button;
+import model.WeatherSystem;
+import view.StyleSetter;
 
 public class ToggleButtonController implements EventHandler<ActionEvent> {
 	
-	private ToggleButton b1;
-	private ToggleButton b2;
+	private Button b1;
+	private Button b2;
+	private LoadWeatherController lwc;
 	
-	public ToggleButtonController(ToggleButton b1, ToggleButton b2) {
+	public ToggleButtonController(Button b1, Button b2, LoadWeatherController lwc) {
 		this.b1 = b1;
 		this.b2 = b2;
+		this.lwc = lwc;
 	}
 	
 	@Override
-	public void handle(ActionEvent arg0) {
-		String toggleStyle = "-fx-font-size: 18; -fx-background-radius: 0; "
-				+ "-fx-background-color: grey; -fx-border-color: white;";
-		String toggleStyle2 = "-fx-font-size: 18; -fx-background-radius: 0; "
-				+ "-fx-background-color: white; -fx-border-color: grey;";
+	public void handle(ActionEvent e) {
 		
+		String val = ((Button)e.getSource()).getText();
 		
-		if (b1.isSelected()) {
-			b1.setStyle(toggleStyle);
-			b2.setSelected(false);
-			b2.setStyle(toggleStyle2);
+		WeatherSystem ws = this.lwc.getDfs().getWeatherSystem();
+		
+		if (val.equals(this.b1.getText())) {
+			b1.setStyle(StyleSetter.toggleStyle);
+			b2.setStyle(StyleSetter.toggleStyle2);
+			ws.changeMeasurementSystem("metric");
 		}
 		
-		if (b2.isSelected()) {
-			b2.setStyle(toggleStyle);
-			b1.setSelected(false);
-			b1.setStyle(toggleStyle2);
-		}	
+		if (val.equals(this.b2.getText())) {
+			b2.setStyle(StyleSetter.toggleStyle);
+			b1.setStyle(StyleSetter.toggleStyle2);
+			ws.changeMeasurementSystem("imperial");
+		}
+		
+		this.lwc.handle(e);
 	}
 }

@@ -2,10 +2,8 @@ package controller;
 
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 
 public class EnterKeypressHandler implements EventHandler<KeyEvent>{
 	
