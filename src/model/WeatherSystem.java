@@ -34,6 +34,7 @@ public class WeatherSystem extends Observable {
 	public static final String METRIC_MODE = "metric";
 	public static final String IMPERIAL_MODE = "imperial";
 	public boolean valid = false;
+	private String currentDay;
 	
 	//add documentation later
 	public WeatherSystem(String location) {
@@ -110,6 +111,12 @@ public class WeatherSystem extends Observable {
 						int offset = (int)getTimezoneOffset(city);
 						long l = (long)((double)currentObject.get("dt"));
 						long time = l + offset;
+
+						//setting up forecast dates
+						String mo = checkThis.substring(5, 7);
+						String d = checkThis.substring(8, 10);
+						String y = checkThis.substring(0, 4);
+						String forecastDate = mo + "/" + d + "/" + y;
 						
 						//day of the week for the specific timestamp
 						String day = getDayOfTheWeek(time);
@@ -119,6 +126,7 @@ public class WeatherSystem extends Observable {
 						conditions.add(day);
 						conditions.add(temp);
 						conditions.add(weatherCondition);
+						conditions.add(forecastDate);
 						
 						this.forecastData.add(conditions);
 					}
@@ -149,6 +157,13 @@ public class WeatherSystem extends Observable {
 		}
 		return "Unknown";
 	}
+	public void setCurrentDay(String day) {
+		this.currentDay = day;
+	}
+	
+	public String getCurrentDay() {
+		return this.currentDay;
+	}
 	
 	@SuppressWarnings("unchecked")
 	public void obtainWeatherData() {
@@ -170,10 +185,17 @@ public class WeatherSystem extends Observable {
 			if (this.isValidSearch()) {
 				this.mainMap = (Map<String, Object>)responseMap.get("main");
 				this.sysMap = (Map<String, Object>)responseMap.get("sys");
+				int offset = (int)getTimezoneOffset(this.responseMap);
+				long l = (long)((double)responseMap.get("dt"));
+				long time = l + offset;
+				
+				//day of the week for the specific timestamp
+				this.setCurrentDay(getDayOfTheWeek(time));
 				this.valid = true;
 			} else {
 				this.valid = false;
 			}
+			
 			
 		} catch(IOException e) {
 			this.valid = false;
@@ -204,7 +226,7 @@ public class WeatherSystem extends Observable {
 	
 	public String getTempType(Map<String, Object> map, String tempType) {
 		if (this.valid) {
-			return String.valueOf(map.get(tempType)) + this.tempUnit;
+			return String.valueOf(roundDecimal((double) map.get(tempType), 1)) + this.tempUnit;
 		}
 		return "N/A";
 	}
@@ -295,7 +317,11 @@ public class WeatherSystem extends Observable {
 			} else {
 				long current = Instant.now().getEpochSecond();
 				long time = current + offset;
+				if (s.equals("date")) {
+					return formatDate(new Date(time * 1000));
+				}
 				return formatTime(new Date(time * 1000));
+				
 			}
 		}
 		return "N/A";
@@ -313,8 +339,18 @@ public class WeatherSystem extends Observable {
 		return this.convertTime("local");
 	}
 	
+	public String getLocalDate() {
+		return this.convertTime("date");
+	}
+	
 	public static String formatTime(Date dateObject) {
 	    SimpleDateFormat timeFormat = new SimpleDateFormat("h:mm a");
+	    timeFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+	    return timeFormat.format(dateObject);
+	}
+	
+	public static String formatDate(Date dateObject) {
+		SimpleDateFormat timeFormat = new SimpleDateFormat("MM/dd/YYYY");
 	    timeFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 	    return timeFormat.format(dateObject);
 	}
@@ -354,5 +390,10 @@ public class WeatherSystem extends Observable {
 	
 	public ArrayList<ArrayList<String>> getForecastData() {
 		return this.forecastData;
+	}
+	
+	private static double roundDecimal (double value, int precision) {
+	    int scale = (int) Math.pow(10, precision);
+	    return (double) Math.round(value * scale) / scale;
 	}
 }

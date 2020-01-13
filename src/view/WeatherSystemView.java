@@ -9,247 +9,358 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import controller.EnterKeypressHandler;
+import controller.LoadWeatherController;
 import controller.ToggleButtonController;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import model.*;
 import resources.ImageResources;
 
-public class WeatherSystemView extends FlowPane implements Observer {
+public class WeatherSystemView extends AnchorPane implements Observer {
 	
 	private Stage stage;
 	public Button goBackButton = new Button("Go Back");
 	public TextField locationField = new TextField();
 	private DayForecastSystem dfs;
-	private VBox wholeBox = new VBox(10);
 	public Button searchButton = new Button("Get Weather");
-	private HBox forecastBox = new HBox(5);
-	//private VBox weatherBox = new VBox(10);
-	private ImageView imageView = new ImageView();
-	
-	//for current weather
-	private ImageView currentWeatherImage = new ImageView();
-	
-	//hbox for current weather stats + currentWeatherImage
-	private HBox weatherHBOX = new HBox(5);
+	public String averageFontSize = "-fx-font-size: 18;";
 	
 	//no longer hardcoded, relative to user's location
 	private String path = new ImageResources().getImagePath();
 	
+	Label location = new Label("Unknown");
+	Label day = new Label("Unknown");
+	Label date = new Label("--/--/----");
+	Label time = new Label("--:--");
+	Label currentTemp = new Label("N/A"); //make this big af
+	Label weather = new Label("Unknown");
+	Label feelsTemp = new Label("Feels like N/A");
+	Label humidity = new Label("N/A% Humidity");
+	Label wind = new Label("Wind speeds of N/A");
+	ImageView currentWeatherImage = new ImageView();
+	
+	//add these 4 somewhere in after the rest above is setup properly
+	Label minTemp = new Label("Min temperature: ");
+	Label maxTemp = new Label("Max temperature: ");
+	Label sunrise = new Label("Sunrise at: ");
+	Label sunset = new Label("Sunset at: ");
+	
+	VBox day1 = new VBox();
+	VBox day2 = new VBox();
+	VBox day3 = new VBox();
+	VBox day4 = new VBox();
+	VBox day5 = new VBox();
+
 	
 	public WeatherSystemView(Stage stage, DayForecastSystem dfs) {
 		this.stage = stage;
 		this.dfs = dfs;
-		this.setAlignment(Pos.CENTER);
-		this.setPadding(new Insets(40, 10, 40, 10));
-		this.setStyle("-fx-background-color:"
-				+ "linear-gradient(from 25% 25% to 100% 100%, rgb(177, 249, 254), rgb(226, 166, 255));"
-				+ " -fx-border-color:black;");
 		
-		this.stage.setMinWidth(600);
-		this.stage.setMaxWidth(600);
-		this.stage.setMinHeight(600);
-		this.stage.setMaxHeight(600);
+		this.setStyle("-fx-background-color: transparent;");
+		setSize(this, 825, 725);
 		
-		ToggleButton tb = new ToggleButton("°C");
-		ToggleButton tb2 = new ToggleButton("°F");
-		this.getChildren().addAll(tb, tb2);
-		tb.setOnAction(new ToggleButtonController(tb, tb2));
-		tb2.setOnAction(new ToggleButtonController(tb2, tb));
-
+		//searchImage setup
+		ImageView searchImage = new ImageView();
+		this.setImage(searchImage, "icons8_search_100px.png", 35, 35);
+		AnchorPane.setTopAnchor(searchImage, 34.5);
+		AnchorPane.setLeftAnchor(searchImage, 440.0);
+		searchImage.setCursor(Cursor.HAND);
+		searchImage.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+		     @Override
+		     public void handle(MouseEvent event) {
+		    	 searchButton.fire();
+		     }
+		});
 		
-		HBox searchBox = new HBox(5);
+		//stackpane main layout background
+		StackPane stackPane = new StackPane();
+		AnchorPane.setBottomAnchor(stackPane, 5.0);
+		AnchorPane.setTopAnchor(stackPane, 5.0);
+		AnchorPane.setLeftAnchor(stackPane, 5.0);
+		AnchorPane.setRightAnchor(stackPane, 5.0);
+		setSize(stackPane, 815, 715);
+		stackPane.setAlignment(Pos.CENTER);
+		stackPane.setStyle("-fx-background-color: orange;");
+		stackPane.setEffect(new DropShadow());
 		
-		locationField.setPrefColumnCount(17);
-		locationField.setMinSize(30,  39);
-		locationField.setPromptText("enter a location (e.g: Oakville, CA)");
-		locationField.setStyle(StyleSetter.TEXT);
+		//main vbox that holds the other stuff
+		VBox mainVbox = new VBox();
+		setSize(mainVbox, 815, 715);
 		
-		searchButton.setMinSize(30, 30);
-		searchButton.setStyle(StyleSetter.REGULAR);
-		goBackButton.setMinSize(30, 30);
-		goBackButton.setStyle(StyleSetter.REGULAR);
+		//top vbox (current weather/search)
+		VBox topVbox = new VBox();
+		setSize(topVbox, 815, 495);
+		topVbox.setAlignment(Pos.CENTER);
+		topVbox.setStyle("-fx-background-color: "
+				+ "linear-gradient(from 25% 25% to 100% 100%, rgb(177, 249, 254), rgb(226, 166, 255));");
 		
-		//allows enter button to be used for making a search
+		//inner hbox (inside topVbox - searching hbox)
+		HBox searchBox = new HBox(10);
+		setSize(searchBox, 527, 96);
+		searchBox.setAlignment(Pos.CENTER);
+		searchBox.setStyle("-fx-background-color: transparent;");
+		
+		//menu image setup
+		ImageView menuImage = new ImageView();
+		this.setImage(menuImage, "icons8_menu_30px_1.png", 30, 30);
+		HBox.setMargin(menuImage, new Insets(0, 10, 0, 0));
+		menuImage.setCursor(Cursor.HAND);
+		
+		//search field inside searchBox
+		locationField.setStyle("-fx-font-size: 20; -fx-background-radius: 30;");
+		locationField.setPromptText("enter a location");
+		setSize(locationField, 252, 47);
 		locationField.setOnKeyPressed(new EnterKeypressHandler(searchButton));
 		
-		searchBox.getChildren().addAll(locationField, searchButton, goBackButton);
-		wholeBox.getChildren().add(searchBox);
+		//image to add locations
+		ImageView plusImage = new ImageView();
+		this.setImage(plusImage, "icons8_plus_math_40px.png", 40, 40);
+		HBox.setMargin(plusImage, new Insets(0, 10, 0, 0));
+		plusImage.setCursor(Cursor.HAND);
 		
-		this.getChildren().addAll(wholeBox);
+		//toggleHbox holds the two toggle buttons for C/F
+		HBox toggleHbox = new HBox();
+		setSize(toggleHbox, 85, 47);
+		toggleHbox.setAlignment(Pos.CENTER);
 		
-		StyleSetter.modifyColour(searchButton, StyleSetter.REGULAR, StyleSetter.HIGHLIGHT);
-		StyleSetter.modifyColour(goBackButton, StyleSetter.REGULAR, StyleSetter.HIGHLIGHT);
+		//toggle setup
+		String toggleStyle = "-fx-font-size: 18; -fx-background-radius: 0; "
+				+ "-fx-background-color: white; -fx-border-color: grey;";
+		ToggleButton tb = new ToggleButton("°C");
+		ToggleButton tb2 = new ToggleButton("°F");
+		tb.setStyle(toggleStyle);
+		tb.setCursor(Cursor.HAND);
+		tb2.setStyle(toggleStyle);
+		tb2.setCursor(Cursor.HAND);
 		
-//		FileInputStream inputstream;
-//
-//
-//		try {
-//			inputstream = new FileInputStream(path + "giphy.gif");
-//			Image image = new Image(inputstream); 
-//			ImageView currentView = new ImageView(image);
-//			currentView.setFitHeight(200.0);
-//			currentView.setFitWidth(200.0);
-//			this.getChildren().add(currentView);
-//		} catch (FileNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		toggleHbox.getChildren().addAll(tb, tb2);
+		tb.setOnAction(new ToggleButtonController(tb, tb2));
+		tb2.setOnAction(new ToggleButtonController(tb2, tb));
 		
+		searchBox.getChildren().addAll(menuImage, locationField, plusImage, toggleHbox);
 		
-	}
-	
-	public void setSwitchFocus(ToggleButton button1, ToggleButton button2) {
-		if (button1.isPressed()) {
-			button2.setSelected(false);
-		}
+		//current weather vbox; underneath searchbox
+		VBox weatherBox = new VBox(5);
+		VBox.setMargin(weatherBox, new Insets(0, 0, 10, 0));
+		weatherBox.setPadding(new Insets(0, 0, 20, 0));
+		setSize(weatherBox, 637, 391);
+		weatherBox.setAlignment(Pos.CENTER);
+		weatherBox.setStyle("-fx-background-color: transparent;");
 		
-		if (button2.isPressed()) {
-			button1.setSelected(false);
-		}
-	}
-	
-	public VBox getCurrentWeather() {
-		WeatherSystem ws = this.dfs.getWeatherSystem();
-		VBox currentWeather = new VBox(3);
+		topVbox.getChildren().addAll(searchBox, weatherBox);
 		
-		//if maps are empty return an empty vbox
-		if ((ws.getTempMap() == null) || (ws.getAllDataMap() == null) || (ws.getSysMap() == null)) {
-			return currentWeather;
-		}
+		//inner hbox of weatherBox; holds location/image
+		HBox locationBox = new HBox(15);
+		setSize(locationBox, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE);
+		locationBox.setAlignment(Pos.CENTER);
 		
-		//otherwise return a vbox with all the weather data
-		Label city = new Label("Local time in " + ws.getCityName() + " is: " + ws.getLocalTime());
-		Label location = new Label("Here are the stats for " + ws.getLocation() + ".\n");
-		Label currentTemp = new Label("Current temperature: " + ws.getCurrentTemp(ws.getTempMap()));
-		Label feelsTemp = new Label("It feels like: " + ws.getFeelsLikeTemp(ws.getTempMap()));
-		Label minTemp = new Label("Min temperature: " + ws.getMinTemp(ws.getTempMap()));
-		Label maxTemp = new Label("Max temperature: " + ws.getMaxTemp(ws.getTempMap()) + "\n");
-		Label humidity = new Label("Humidity of: " + ws.getHumidity());
-		Label wind = new Label("Wind speeds of: " + ws.getWindConditions());
-		Label weather = new Label("Current weather conditions: " + ws.getWeatherStatus(ws.getAllDataMap()) + "\n");
-		Label sunrise = new Label("Sunrise at: " + ws.getSunriseTime());
-		Label sunset = new Label("Sunset at: " + ws.getSunsetTime());
+		//pinpoint image
+		ImageView pinpointImage = new ImageView();
+		this.setImage(pinpointImage, "icons8_marker_50px.png", 30, 30);
+		
+		//location label
+		setSize(location, USE_COMPUTED_SIZE, 40);
+		location.setStyle("-fx-font-size: 28; -fx-font-weight: BOLD;");
+		location.setAlignment(Pos.CENTER_LEFT);
+		
+		locationBox.getChildren().addAll(pinpointImage, location);
+		
+		currentTemp.setStyle("-fx-font-size: 60;");
+		weather.setStyle("-fx-font-size: 22;");
+		
+		day.setStyle(averageFontSize);
+		date.setStyle(averageFontSize);
+		time.setStyle(averageFontSize);
+		feelsTemp.setStyle(averageFontSize);
+		humidity.setStyle(averageFontSize);
+		wind.setStyle(averageFontSize);
+		
+		//vbox that holds the 3 day/date/time
+		VBox container = new VBox(5);
+		container.getChildren().addAll(day, date, time);
+		container.setAlignment(Pos.CENTER);
+		
+		//another container
+		HBox dayAndIcon = new HBox(10);
+		setForecastImage(currentWeatherImage, "sky");
+		dayAndIcon.getChildren().addAll(container, currentWeatherImage);
+		dayAndIcon.setAlignment(Pos.CENTER);
+		
+		//add to this
+		weatherBox.getChildren().addAll(locationBox, dayAndIcon, currentTemp, weather,
+				feelsTemp, humidity, wind);
 
-		//sets currentWeather image to match weather condition at current time
-		this.currentWeatherImage = getWeatherImage(ws.getWeatherStatus(ws.getAllDataMap()));
+		//bottom hbox (5day forecast)
+		HBox bottomHbox = new HBox();
+		setSize(bottomHbox, 815, 220);
+		bottomHbox.setAlignment(Pos.CENTER);
+		bottomHbox.setStyle("-fx-background-color: "
+				+ " linear-gradient(to left, rgb(212, 122, 230), rgb(252, 222, 124));");
+		bottomHbox.setEffect(new DropShadow());
 		
-		currentWeather.getChildren().addAll(city, location, currentTemp, feelsTemp,
-				minTemp, maxTemp, humidity, wind, weather, sunrise, sunset);
+		//5 vbox setup to put inside forecast box
+		setForecastVBox(day1, "N/A", "N/A", "N/A", "N/A", "N/A");
+		setForecastVBox(day2, "N/A", "N/A", "N/A", "N/A", "N/A");
+		setForecastVBox(day3, "N/A", "N/A", "N/A", "N/A", "N/A");
+		setForecastVBox(day4, "N/A", "N/A", "N/A", "N/A", "N/A");
+		setForecastVBox(day5, "N/A", "N/A", "N/A", "N/A", "N/A");
 		
-		return currentWeather;
+		bottomHbox.getChildren().addAll(day1, day2, day3, day4, day5);
+		mainVbox.getChildren().addAll(topVbox, bottomHbox);
+		stackPane.getChildren().addAll(mainVbox);
+		
+		
+		this.getChildren().addAll(stackPane, searchImage);
 	}
 	
-	public VBox getForecastDay(int n) {
+	public void setImage(ImageView view, String endOfPath, double width, double height) {
+		FileInputStream inputStream;
 		
-		
-		VBox dayForecast = new VBox();
-		Label day = new Label(this.dfs.getDay());
-		Label temp = new Label(this.dfs.getTemp());
-		Label weather = new Label(this.dfs.getWeather());
-		imageView = this.getWeatherImage(this.dfs.getWeather());
-		dayForecast.getChildren().addAll(day, imageView, temp, weather);
-		dayForecast.setPadding(new Insets(40, 10, 10, 10));
-		dayForecast.setAlignment(Pos.CENTER);
-		
-		return dayForecast;
+		try {
+			inputStream = new FileInputStream(path + endOfPath);
+			Image image = new Image(inputStream);
+			view.setImage(image);
+			view.setFitHeight(height);
+			view.setFitWidth(width);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
-	public ImageView getWeatherImage(String weatherCondition) {
+	public void setForecastVBox(VBox vbox, String d, String dt, String t, String w, String i) {
+		HBox.setMargin(vbox, new Insets(10, 10, 10, 10));
+		setSize(vbox, 143, 200);
+		vbox.setSpacing(5);
+		Label day = new Label(d);
+		Label date = new Label(dt);
+		Label temp = new Label(t); 
+		Label weather = new Label(w);
+		day.setStyle(averageFontSize);
+		temp.setStyle(averageFontSize);
+		weather.setStyle(averageFontSize);
+		ImageView icon = new ImageView();
+		this.setForecastImage(icon, i);
+
+		vbox.setAlignment(Pos.CENTER);
+		vbox.setEffect(new DropShadow());
+		vbox.setStyle("-fx-background-color: beige;");
+		vbox.getChildren().addAll(day, date, icon, temp, weather);
+	}
+	
+	public static void setSize(Region r, double width, double height) {
+		r.setMinWidth(width);
+		r.setMaxWidth(width);
+		r.setMinHeight(height);
+		r.setMaxHeight(height);
+	}
+	
+	public void setCurrentWeather() {
+		WeatherSystem ws = this.dfs.getWeatherSystem();
+	
+		location.setText(ws.getLocation());
+		day.setText(ws.getCurrentDay());
+		//add a date one as well
+		date.setText(ws.getLocalDate());
+		time.setText(ws.getLocalTime());
+		currentTemp.setText(ws.getCurrentTemp(ws.getTempMap()));
+		weather.setText(ws.getWeatherStatus(ws.getAllDataMap()));
+		feelsTemp.setText("Feels like " + ws.getFeelsLikeTemp(ws.getTempMap()));
+		humidity.setText(ws.getHumidity() + " Humidity");
+		wind.setText("Wind speeds of " + ws.getWindConditions());
+		setForecastImage(currentWeatherImage, ws.getWeatherStatus(ws.getAllDataMap()));
+		
+		//add these somewhere to the view later
+		maxTemp.setText("Daily high of " + ws.getMaxTemp(ws.getTempMap()));
+		minTemp.setText("Daily low of " + ws.getMinTemp(ws.getTempMap()));
+		sunrise.setText("Sunrise at " + ws.getSunriseTime());
+		sunset.setText("Sunset at " + ws.getSunsetTime());
+	}
+	
+	public void setForecastImage(ImageView forecastImage, String weatherCondition) {
 		//regex patterns to determine weather icons to be displayed
 		Pattern snow = Pattern.compile("^.*(snow).*$");
 		Pattern rain = Pattern.compile("^.*(rain).*$");
 		Pattern clearsky = Pattern.compile("^.*(sky).*$");
 		Pattern thunder = Pattern.compile("^.*(thunder).*$");
 		Pattern clouds = Pattern.compile("^.*(cloud).*$");
-		
-		FileInputStream inputstream;
 
-		try {
-			if (snow.matcher(weatherCondition).matches()) {
-				inputstream = new FileInputStream(path + "icons8_snowflake_125px.png");
-			} else if (rain.matcher(weatherCondition).matches()) {
-				inputstream = new FileInputStream(path + "icons8_rainfall_125px.png");
-			} else if (thunder.matcher(weatherCondition).matches()) {
-				inputstream = new FileInputStream(path + "icons8_storm_125px.png");
-			} else if (clouds.matcher(weatherCondition).matches()) {
-				inputstream = new FileInputStream(path + "icons8_clouds_125px.png");
-			} else if (clearsky.matcher(weatherCondition).matches()) {
-				inputstream = new FileInputStream(path + "icons8_sun_125px.png");
-			} else {
-				inputstream = new FileInputStream(path + "icons8_sun_125px.png");
-			}
-			
-			Image image = new Image(inputstream); 
-			ImageView currentView = new ImageView(image);
-			currentView.setFitHeight(50.0);
-			currentView.setFitWidth(50.0);
-			return currentView;
-			
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		double height = 75.0;
+		double width = 75.0;
+		
+		if (snow.matcher(weatherCondition).matches()) {
+			this.setImage(forecastImage, "icons8_snowflake_125px.png", width, height);
+		} else if (rain.matcher(weatherCondition).matches()) {
+			this.setImage(forecastImage, "icons8_rainfall_125px.png", width, height);
+		} else if (thunder.matcher(weatherCondition).matches()) {
+			this.setImage(forecastImage, "icons8_storm_125px.png", width, height);
+		} else if (clouds.matcher(weatherCondition).matches()) {
+			this.setImage(forecastImage, "icons8_clouds_125px.png", width, height);
+		} else if (clearsky.matcher(weatherCondition).matches()) {
+			this.setImage(forecastImage, "icons8_sun_125px.png", width, height);
+		} else {
+			this.setImage(forecastImage, "icons8_sun_125px.png", width, height);
 		}
-		return imageView;
 	}
 	
-	public void addToView() {
+	public void updateForecastVBox(int number) {
 		
-		//handles weather
-		VBox weather = new VBox(getCurrentWeather());
-		currentWeatherImage.setFitHeight(100.0);
-		currentWeatherImage.setFitWidth(100.0);
-		
-		//maybe make a vbox that contains both the weatherBox and the forecastBox, thenn add them to the wholeBox
-		if (weatherHBOX.getChildren().size() == 2) {
-			weatherHBOX.getChildren().clear();
+		//updates forecast corresponding forecast box with relevant location data
+		if (number == 0) {
+			day1.getChildren().clear();
+			this.setForecastVBox(day1, this.dfs.getDay(), this.dfs.getDate(), this.dfs.getTemp(),
+					this.dfs.getWeather(), this.dfs.getWeather());
+		} else if (number == 1) {
+			day2.getChildren().clear();
+			this.setForecastVBox(day2, this.dfs.getDay(), this.dfs.getDate(), this.dfs.getTemp(),
+					this.dfs.getWeather(), this.dfs.getWeather());
+		} else if (number == 2) {
+			day3.getChildren().clear();
+			this.setForecastVBox(day3, this.dfs.getDay(), this.dfs.getDate(), this.dfs.getTemp(),
+					this.dfs.getWeather(), this.dfs.getWeather());
+		} else if (number == 3) {
+			day4.getChildren().clear();
+			this.setForecastVBox(day4, this.dfs.getDay(), this.dfs.getDate(), this.dfs.getTemp(),
+					this.dfs.getWeather(), this.dfs.getWeather());
+		} else if (number == 4) {
+			day5.getChildren().clear();
+			this.setForecastVBox(day5, this.dfs.getDay(), this.dfs.getDate(), this.dfs.getTemp(),
+					this.dfs.getWeather(), this.dfs.getWeather());
 		}
-		
-		weatherHBOX.getChildren().addAll(weather, currentWeatherImage);
-		HBox.setMargin(currentWeatherImage, new Insets(45, 0, 0, 75));
-		weatherHBOX.setPadding(new Insets(30, 0, 0, 0));
-		
-		if (!this.wholeBox.getChildren().contains(weatherHBOX)) {
-			this.wholeBox.getChildren().add(weatherHBOX);
-		}
-		
-		//handles forecast
-		VBox forecast = new VBox(getForecastDay(this.dfs.getCurrentDay()));
-		
-		if (forecastBox.getChildren().size() == 5) {
-			forecastBox.getChildren().clear();
-		}
-
-		forecastBox.getChildren().addAll(forecast);
-		
-		if (!this.wholeBox.getChildren().contains(forecastBox)) {
-			this.wholeBox.getChildren().addAll(forecastBox);
-		}
-		
 	}
 
 	@Override
 	public void update(Observable o) {
+		//updates the daily weather
+		this.setCurrentWeather();
+		
+		//updates all forecast data
 		this.dfs.setForecastDay(1);
-		this.addToView();
+		this.updateForecastVBox(this.dfs.getCurrentDay());
 		this.dfs.setForecastDay(2);
-		this.addToView();
+		this.updateForecastVBox(this.dfs.getCurrentDay());
 		this.dfs.setForecastDay(3);
-		this.addToView();
+		this.updateForecastVBox(this.dfs.getCurrentDay());
 		this.dfs.setForecastDay(4);
-		this.addToView();
+		this.updateForecastVBox(this.dfs.getCurrentDay());
 		this.dfs.setForecastDay(5);
-		this.addToView();
+		this.updateForecastVBox(this.dfs.getCurrentDay());
 	}
 }

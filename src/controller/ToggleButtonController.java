@@ -16,13 +16,22 @@ public class ToggleButtonController implements EventHandler<ActionEvent> {
 	
 	@Override
 	public void handle(ActionEvent arg0) {
-		// TODO Auto-generated method stub
+		String toggleStyle = "-fx-font-size: 18; -fx-background-radius: 0; "
+				+ "-fx-background-color: grey; -fx-border-color: white;";
+		String toggleStyle2 = "-fx-font-size: 18; -fx-background-radius: 0; "
+				+ "-fx-background-color: white; -fx-border-color: grey;";
+		
+		
 		if (b1.isSelected()) {
+			b1.setStyle(toggleStyle);
 			b2.setSelected(false);
+			b2.setStyle(toggleStyle2);
 		}
 		
 		if (b2.isSelected()) {
+			b2.setStyle(toggleStyle);
 			b1.setSelected(false);
+			b1.setStyle(toggleStyle2);
 		}
 		
 	}
