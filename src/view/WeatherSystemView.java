@@ -27,50 +27,42 @@ import resources.ImageResources;
 public class WeatherSystemView extends AnchorPane implements Observer {
 	
 	private Stage stage;
-	public Button goBackButton = new Button("Go Back");
-	public TextField locationField = new TextField();
 	private DayForecastSystem dfs;
-	public Button searchButton = new Button("Get Weather");
-	public String averageFontSize = "-fx-font-size: 18;";
+	public TextField locationField = new TextField();
+	public Button searchButton = new Button();
+	public String averageFontSize = "-fx-font-size: 16;";
 	
-	//no longer hardcoded, relative to user's location
+	//path relative to user's machine
 	private String path = new ImageResources().getImagePath();
-	
-	Label location = new Label("Unknown");
-	Label day = new Label("Unknown");
-	Label date = new Label("--/--/----");
-	Label time = new Label("--:--");
-	Label currentTemp = new Label("N/A"); //make this big af
-	Label weather = new Label("Unknown");
-	Label feelsTemp = new Label("Feels like N/A");
-	Label humidity = new Label("N/A% Humidity");
-	Label wind = new Label("Wind speeds of N/A");
-	ImageView currentWeatherImage = new ImageView();
+	private Label location = new Label("Unknown");
+	private Label day = new Label("Unknown");
+	private Label date = new Label("--/--/----");
+	private Label time = new Label("--:--");
+	private Label currentTemp = new Label("N/A");
+	private Label weather = new Label("Unknown");
+	private Label minMaxFeelsTemp = new Label("N/A");
+	private Label humidity = new Label("N/A% Humidity");
+	private Label wind = new Label("Wind speeds of N/A");
+	private Label sunrise = new Label("Sunrise at N/A ");
+	private Label sunset = new Label("Sunset at N/A");
+	private ImageView currentWeatherImage = new ImageView();
 	public Button tb = new Button("°C");
 	public Button tb2 = new Button("°F");
-	
-	//add these 4 somewhere in after the rest above is setup properly
-	Label minTemp = new Label("Min temperature: ");
-	Label maxTemp = new Label("Max temperature: ");
-	Label sunrise = new Label("Sunrise at: ");
-	Label sunset = new Label("Sunset at: ");
-	public int hour;
-	
-	VBox day1 = new VBox();
-	VBox day2 = new VBox();
-	VBox day3 = new VBox();
-	VBox day4 = new VBox();
-	VBox day5 = new VBox();
 
+	private VBox day1 = new VBox();
+	private VBox day2 = new VBox();
+	private VBox day3 = new VBox();
+	private VBox day4 = new VBox();
+	private VBox day5 = new VBox();
 	
 	public WeatherSystemView(Stage stage, DayForecastSystem dfs) {
 		this.stage = stage;
 		this.dfs = dfs;
 		
 		this.stage.setMinWidth(825);
-		this.stage.setMaxWidth(825);
+		this.stage.setMaxWidth(870);
 		this.stage.setMinHeight(725);
-		this.stage.setMaxHeight(725);
+		this.stage.setMaxHeight(770);
 		
 		this.setStyle("-fx-background-color: transparent;");
 		setSize(this, 825, 725);
@@ -79,7 +71,7 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 		ImageView searchImage = new ImageView();
 		this.setImage(searchImage, "search.png", 35, 35);
 		AnchorPane.setTopAnchor(searchImage, 34.5);
-		AnchorPane.setLeftAnchor(searchImage, 440.0);
+		AnchorPane.setLeftAnchor(searchImage, 475.0);
 		searchImage.setCursor(Cursor.HAND);
 		searchImage.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
 		     @Override
@@ -115,6 +107,7 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 		setSize(searchBox, 527, 96);
 		searchBox.setAlignment(Pos.CENTER);
 		searchBox.setStyle("-fx-background-color: transparent;");
+		searchBox.setTranslateX(35);
 		
 		//menu image setup
 		ImageView menuImage = new ImageView();
@@ -140,23 +133,22 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 		toggleHbox.setAlignment(Pos.CENTER);
 		
 		//toggle setup
-
 		tb.setStyle(StyleSetter.toggleStyle);
 		tb.setCursor(Cursor.HAND);
 		tb2.setStyle(StyleSetter.toggleStyle2);
 		tb2.setCursor(Cursor.HAND);
 		
 		toggleHbox.getChildren().addAll(tb, tb2);
-		
 		searchBox.getChildren().addAll(menuImage, locationField, plusImage, toggleHbox);
 		
 		//current weather vbox; underneath searchbox
-		VBox weatherBox = new VBox(5);
+		VBox weatherBox = new VBox();
 		VBox.setMargin(weatherBox, new Insets(0, 0, 10, 0));
 		weatherBox.setPadding(new Insets(0, 0, 20, 0));
 		setSize(weatherBox, 637, 391);
 		weatherBox.setAlignment(Pos.CENTER);
 		weatherBox.setStyle("-fx-background-color: transparent;");
+		weatherBox.setTranslateX(-20);
 		
 		topVbox.getChildren().addAll(searchBox, weatherBox);
 		
@@ -164,6 +156,8 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 		HBox locationBox = new HBox(15);
 		setSize(locationBox, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE);
 		locationBox.setAlignment(Pos.CENTER);
+		locationBox.setTranslateX(-10);
+		locationBox.setTranslateY(-10);
 		
 		//pinpoint image
 		ImageView pinpointImage = new ImageView();
@@ -177,17 +171,20 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 		locationBox.getChildren().addAll(pinpointImage, location);
 		
 		currentTemp.setStyle("-fx-font-size: 60;");
-		weather.setStyle("-fx-font-size: 22;");
+		weather.setStyle("-fx-font-size: 18; -fx-font-weight: 500;");
+		weather.setTranslateY(-12.5);
 		
 		day.setStyle(averageFontSize);
 		date.setStyle(averageFontSize);
 		time.setStyle(averageFontSize);
-		feelsTemp.setStyle(averageFontSize);
+		minMaxFeelsTemp.setStyle("-fx-font-size: 15; -fx-font-style: italic; -fx-font-weight: 500;");
 		humidity.setStyle(averageFontSize);
 		wind.setStyle(averageFontSize);
+		sunrise.setStyle(averageFontSize);
+		sunset.setStyle(averageFontSize);
 		
 		//vbox that holds the 3 day/date/time
-		VBox container = new VBox(5);
+		VBox container = new VBox();
 		container.getChildren().addAll(day, date, time);
 		container.setAlignment(Pos.CENTER);
 		
@@ -197,16 +194,18 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 		dayAndIcon.getChildren().addAll(container, currentWeatherImage);
 		dayAndIcon.setAlignment(Pos.CENTER);
 		
-		//add to this
-		weatherBox.getChildren().addAll(locationBox, dayAndIcon, currentTemp, weather,
-				feelsTemp, humidity, wind);
+		//holds all temps
+		VBox tempBox = new VBox();
+		tempBox.setAlignment(Pos.CENTER);
+		tempBox.getChildren().addAll(currentTemp, minMaxFeelsTemp);
+		minMaxFeelsTemp.setTranslateY(-10.0);
 
 		//bottom hbox (5day forecast)
 		HBox bottomHbox = new HBox();
 		setSize(bottomHbox, 815, 220);
 		bottomHbox.setAlignment(Pos.CENTER);
 		bottomHbox.setStyle("-fx-background-color: "
-				+ " linear-gradient(to left, rgb(212, 122, 230), rgb(252, 222, 124));");
+				+ " linear-gradient(to left, rgb(226, 166, 255), rgb(252, 222, 124));");
 		bottomHbox.setEffect(new DropShadow());
 		
 		//5 vbox setup to put inside forecast box
@@ -216,6 +215,8 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 		setForecastVBox(day4, "N/A", "N/A", "N/A", "N/A", "N/A");
 		setForecastVBox(day5, "N/A", "N/A", "N/A", "N/A", "N/A");
 		
+		weatherBox.getChildren().addAll(locationBox, dayAndIcon, tempBox, weather,
+				humidity, wind, sunrise, sunset);
 		bottomHbox.getChildren().addAll(day1, day2, day3, day4, day5);
 		mainVbox.getChildren().addAll(topVbox, bottomHbox);
 		stackPane.getChildren().addAll(mainVbox);
@@ -232,7 +233,6 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 			view.setFitHeight(height);
 			view.setFitWidth(width);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -240,19 +240,18 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 	public void setForecastVBox(VBox vbox, String d, String dt, String t, String w, String i) {
 		HBox.setMargin(vbox, new Insets(10, 10, 10, 10));
 		setSize(vbox, 143, 200);
-		vbox.setSpacing(5);
 		Label day = new Label(d);
 		Label date = new Label(dt);
 		Label temp = new Label(t); 
 		Label weather = new Label(w);
-		day.setStyle(averageFontSize);
-		temp.setStyle(averageFontSize);
-		weather.setStyle(averageFontSize);
+		day.setStyle("-fx-font-size: 18; -fx-font-weight: 500;");
+		temp.setStyle("-fx-font-size: 18; -fx-font-weight: 700;");
+		weather.setStyle("-fx-font-size: 16; -fx-font-weight: 600;");
 		ImageView icon = new ImageView();
 		this.setForecastImage(icon, i);
 		
+		vbox.setSpacing(5);
 		vbox.setOpacity(0.95);
-
 		vbox.setAlignment(Pos.CENTER);
 		vbox.setEffect(new DropShadow());
 		vbox.setStyle("-fx-background-color: beige;");
@@ -272,28 +271,16 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 		location.setText(ws.getLocation());
 		day.setText(ws.getCurrentDay());
 		date.setText(ws.getLocalDate());
-		time.setText(ws.getLocalTime());
-		
-		//this.hour = Integer.parseInt(time.getText().substring(0, 1));
-		
+		time.setText(ws.getLocalTime());		
 		currentTemp.setText(ws.getCurrentTemp(ws.getTempMap()));
 		weather.setText(ws.getWeatherStatus(ws.getAllDataMap()));
-		feelsTemp.setText("Feels like " + ws.getFeelsLikeTemp(ws.getTempMap()));
 		humidity.setText(ws.getHumidity() + " Humidity");
 		wind.setText("Wind speeds of " + ws.getWindConditions());
 		setForecastImage(currentWeatherImage, ws.getWeatherStatus(ws.getAllDataMap()));
-		
-		//add these somewhere to the view later
-		maxTemp.setText("Daily high of " + ws.getMaxTemp(ws.getTempMap()));
-		minTemp.setText("Daily low of " + ws.getMinTemp(ws.getTempMap()));
+		minMaxFeelsTemp.setText(ws.getMaxTemp(ws.getTempMap()) + " / " + ws.getMinTemp(ws.getTempMap()) 
+		+ " Feels like " + ws.getFeelsLikeTemp(ws.getTempMap()) );
 		sunrise.setText("Sunrise at " + ws.getSunriseTime());
 		sunset.setText("Sunset at " + ws.getSunsetTime());
-		
-		int t = time.getText().length();
-		System.out.println(t);
-		System.out.println(time.getText().substring(t-4, t-1));
-		System.out.println(sunrise.getText());
-		System.out.println(sunset.getText());
 	}
 	
 	public void setForecastImage(ImageView forecastImage, String weatherCondition) {
@@ -302,29 +289,43 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 		Pattern rain = Pattern.compile("^.*(rain).*$");
 		Pattern clearsky = Pattern.compile("^.*(sky).*$");
 		Pattern thunder = Pattern.compile("^.*(thunder).*$");
-		Pattern clouds = Pattern.compile("^.*(cloud).*$");
+		Pattern clouds = Pattern.compile("^.*(overcast clouds|broken clouds).*$");
+		Pattern cloudsDayNight = Pattern.compile("^.*(scattered clouds|few clouds).*$");
 		Pattern mist = Pattern.compile("^.*(mist).*$");
 
 		double height = 75.0;
 		double width = 75.0;
 		
+		WeatherSystem ws = this.dfs.getWeatherSystem();
 		
+		int localTime = WeatherSystem.getTimeIn24Hr(ws.getLocalTime());
+		int sunriseTime = WeatherSystem.getTimeIn24Hr(ws.getSunriseTime());
+		int sunsetTime = WeatherSystem.getTimeIn24Hr(ws.getSunsetTime());
+
+		if (localTime >= sunriseTime && localTime < sunsetTime) {
+			if (cloudsDayNight.matcher(weatherCondition).matches()) {
+				this.setImage(forecastImage, "sunclouds.png", width, height);
+			} else if (clearsky.matcher(weatherCondition).matches()) {
+				this.setImage(forecastImage, "sun.png", width, height);
+			}
+		} else if (localTime >= sunsetTime || localTime <= sunriseTime) {
+			if (cloudsDayNight.matcher(weatherCondition).matches()) {
+				this.setImage(forecastImage, "nightclouds.png", width, height);
+			} else if (clearsky.matcher(weatherCondition).matches()) {
+				this.setImage(forecastImage, "moon.png", width, height);
+			}
+		}
 		
-//		if (this.hour < 7)
-		if (snow.matcher(weatherCondition).matches()) {
+		if (clouds.matcher(weatherCondition).matches()) {
+			this.setImage(forecastImage, "clouds2.png", width, height);
+		} else if (mist.matcher(weatherCondition).matches()) {
+			this.setImage(forecastImage, "mist.png", width, height);
+		} else if (snow.matcher(weatherCondition).matches()) {
 			this.setImage(forecastImage, "snow.png", width, height);
 		} else if (rain.matcher(weatherCondition).matches()) {
 			this.setImage(forecastImage, "rain.png", width, height);
 		} else if (thunder.matcher(weatherCondition).matches()) {
 			this.setImage(forecastImage, "storm.png", width, height);
-		} else if (clouds.matcher(weatherCondition).matches()) {
-			this.setImage(forecastImage, "cloud.png", width, height);
-		} else if (clearsky.matcher(weatherCondition).matches()) {
-			this.setImage(forecastImage, "moon.png", width, height);
-		} else if (mist.matcher(weatherCondition).matches()) {
-			this.setImage(forecastImage, "mist.png", width, height);
-		} else {
-			this.setImage(forecastImage, "sun.png", width, height);
 		}
 	}
 	
@@ -358,12 +359,6 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 	public void update(Observable o) {
 		//for daily weather
 		this.setCurrentWeather();
-		
-		WeatherSystem ws = this.dfs.getWeatherSystem();
-		int localTime = WeatherSystem.getTimeIn24Hr(time.getText());
-		int sunriseTime = WeatherSystem.getTimeIn24Hr(ws.getSunriseTime());
-		int sunsetTime = WeatherSystem.getTimeIn24Hr(ws.getSunsetTime());
-		System.out.println(localTime + " sunrise: " + sunriseTime + ", sunset: " + sunsetTime);
 		
 		//for 5 day forecast
 		this.dfs.setForecastDay(1);

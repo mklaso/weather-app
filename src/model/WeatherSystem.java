@@ -37,7 +37,6 @@ public class WeatherSystem extends Observable {
 	public boolean valid = false;
 	private String currentDay;
 	private String speedUnit = "m/s";
-	private int time24;
 	
 	//add documentation later
 	public WeatherSystem(String location) {
@@ -258,11 +257,17 @@ public class WeatherSystem extends Observable {
 	}
 	
 	public String getMinTemp(Map<String, Object> map) {
-		return this.getTempType(map, "temp_min");
+		if (this.valid) {
+			return String.valueOf(roundDecimal((double) map.get("temp_min"), 1)) + "°";
+		}
+		return "N/A";
 	}
 	
 	public String getMaxTemp(Map<String, Object> map) {
-		return this.getTempType(map, "temp_max");
+		if (this.valid) {
+			return String.valueOf(roundDecimal((double) map.get("temp_max"), 1)) + "°";
+		}
+		return "N/A";
 	}
 	
 	public String getHumidity() {
@@ -277,7 +282,7 @@ public class WeatherSystem extends Observable {
 		
 		if (this.valid) {
 			Map<String, Object> wind = (Map<String, Object>)responseMap.get("wind");
-			return String.valueOf(wind.get("speed")) + this.speedUnit;
+			return String.valueOf(roundDecimal((double)wind.get("speed"), 1)) + this.speedUnit;
 		}
 		return "N/A";
 	}
@@ -363,9 +368,9 @@ public class WeatherSystem extends Observable {
 	
 	public static int getTimeIn24Hr(String timeToConvert) {
 	    
-	     SimpleDateFormat parseFormat = new SimpleDateFormat("hh:mm a");
-	     SimpleDateFormat timeFormat = new SimpleDateFormat("HHmm");
-	     Date convertedTime;
+	    SimpleDateFormat parseFormat = new SimpleDateFormat("hh:mm a");
+	    SimpleDateFormat timeFormat = new SimpleDateFormat("HHmm");
+	    Date convertedTime;
 	     
 		try {
 			convertedTime = parseFormat.parse(timeToConvert);
@@ -423,9 +428,5 @@ public class WeatherSystem extends Observable {
 	private static double roundDecimal (double value, int precision) {
 	    int precisionScale = (int) Math.pow(10, precision);
 	    return (double) Math.round(value * precisionScale) / precisionScale;
-	}
-	
-	public static void main(String[] args) {
-		System.out.println(getTimeIn24Hr("8:30 a.m."));
 	}
 }

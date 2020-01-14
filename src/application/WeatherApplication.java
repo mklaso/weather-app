@@ -2,6 +2,7 @@ package application;
 	
 import javafx.application.Application;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import model.DayForecastSystem;
 import model.WeatherSystem;
 import view.*;
@@ -41,7 +42,8 @@ public class WeatherApplication extends Application {
 		// STAGE
 		window.setScene(weatherScene);
 		window.setTitle("Weather Application");
-	    
+		window.setResizable(false); 
+
 		// LAUNCH THE GUI
 		window.show();
 	}
