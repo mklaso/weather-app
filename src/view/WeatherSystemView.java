@@ -54,6 +54,7 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 	Label maxTemp = new Label("Max temperature: ");
 	Label sunrise = new Label("Sunrise at: ");
 	Label sunset = new Label("Sunset at: ");
+	public int hour;
 	
 	VBox day1 = new VBox();
 	VBox day2 = new VBox();
@@ -76,7 +77,7 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 		
 		//searchImage setup
 		ImageView searchImage = new ImageView();
-		this.setImage(searchImage, "icons8_search_100px.png", 35, 35);
+		this.setImage(searchImage, "search.png", 35, 35);
 		AnchorPane.setTopAnchor(searchImage, 34.5);
 		AnchorPane.setLeftAnchor(searchImage, 440.0);
 		searchImage.setCursor(Cursor.HAND);
@@ -117,7 +118,7 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 		
 		//menu image setup
 		ImageView menuImage = new ImageView();
-		this.setImage(menuImage, "icons8_menu_30px_1.png", 30, 30);
+		this.setImage(menuImage, "menu.png", 30, 30);
 		HBox.setMargin(menuImage, new Insets(0, 10, 0, 0));
 		menuImage.setCursor(Cursor.HAND);
 		
@@ -129,7 +130,7 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 		
 		//image to add locations
 		ImageView plusImage = new ImageView();
-		this.setImage(plusImage, "icons8_plus_math_40px.png", 40, 40);
+		this.setImage(plusImage, "add.png", 40, 40);
 		HBox.setMargin(plusImage, new Insets(0, 10, 0, 0));
 		plusImage.setCursor(Cursor.HAND);
 		
@@ -166,7 +167,7 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 		
 		//pinpoint image
 		ImageView pinpointImage = new ImageView();
-		this.setImage(pinpointImage, "icons8_marker_50px.png", 30, 30);
+		this.setImage(pinpointImage, "marker.png", 30, 30);
 		
 		//location label
 		setSize(location, USE_COMPUTED_SIZE, 40);
@@ -272,6 +273,9 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 		day.setText(ws.getCurrentDay());
 		date.setText(ws.getLocalDate());
 		time.setText(ws.getLocalTime());
+		
+		//this.hour = Integer.parseInt(time.getText().substring(0, 1));
+		
 		currentTemp.setText(ws.getCurrentTemp(ws.getTempMap()));
 		weather.setText(ws.getWeatherStatus(ws.getAllDataMap()));
 		feelsTemp.setText("Feels like " + ws.getFeelsLikeTemp(ws.getTempMap()));
@@ -284,6 +288,12 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 		minTemp.setText("Daily low of " + ws.getMinTemp(ws.getTempMap()));
 		sunrise.setText("Sunrise at " + ws.getSunriseTime());
 		sunset.setText("Sunset at " + ws.getSunsetTime());
+		
+		int t = time.getText().length();
+		System.out.println(t);
+		System.out.println(time.getText().substring(t-4, t-1));
+		System.out.println(sunrise.getText());
+		System.out.println(sunset.getText());
 	}
 	
 	public void setForecastImage(ImageView forecastImage, String weatherCondition) {
@@ -293,22 +303,28 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 		Pattern clearsky = Pattern.compile("^.*(sky).*$");
 		Pattern thunder = Pattern.compile("^.*(thunder).*$");
 		Pattern clouds = Pattern.compile("^.*(cloud).*$");
+		Pattern mist = Pattern.compile("^.*(mist).*$");
 
 		double height = 75.0;
 		double width = 75.0;
 		
+		
+		
+//		if (this.hour < 7)
 		if (snow.matcher(weatherCondition).matches()) {
-			this.setImage(forecastImage, "icons8_snowflake_125px.png", width, height);
+			this.setImage(forecastImage, "snow.png", width, height);
 		} else if (rain.matcher(weatherCondition).matches()) {
-			this.setImage(forecastImage, "icons8_rainfall_125px.png", width, height);
+			this.setImage(forecastImage, "rain.png", width, height);
 		} else if (thunder.matcher(weatherCondition).matches()) {
-			this.setImage(forecastImage, "icons8_storm_125px.png", width, height);
+			this.setImage(forecastImage, "storm.png", width, height);
 		} else if (clouds.matcher(weatherCondition).matches()) {
-			this.setImage(forecastImage, "icons8_clouds_125px.png", width, height);
+			this.setImage(forecastImage, "cloud.png", width, height);
 		} else if (clearsky.matcher(weatherCondition).matches()) {
-			this.setImage(forecastImage, "icons8_sun_125px.png", width, height);
+			this.setImage(forecastImage, "moon.png", width, height);
+		} else if (mist.matcher(weatherCondition).matches()) {
+			this.setImage(forecastImage, "mist.png", width, height);
 		} else {
-			this.setImage(forecastImage, "icons8_sun_125px.png", width, height);
+			this.setImage(forecastImage, "sun.png", width, height);
 		}
 	}
 	
@@ -342,6 +358,12 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 	public void update(Observable o) {
 		//for daily weather
 		this.setCurrentWeather();
+		
+		WeatherSystem ws = this.dfs.getWeatherSystem();
+		int localTime = WeatherSystem.getTimeIn24Hr(time.getText());
+		int sunriseTime = WeatherSystem.getTimeIn24Hr(ws.getSunriseTime());
+		int sunsetTime = WeatherSystem.getTimeIn24Hr(ws.getSunsetTime());
+		System.out.println(localTime + " sunrise: " + sunriseTime + ", sunset: " + sunsetTime);
 		
 		//for 5 day forecast
 		this.dfs.setForecastDay(1);

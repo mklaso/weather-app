@@ -26,7 +26,6 @@ public class LoadWeatherController implements EventHandler<ActionEvent> {
 		ws.get5DayForecast();
 		
 	    this.dfs.updateWeatherSystem(ws);
-	    this.dfs.print5DayForecast();
 
 		if (this.dfs.forecastDataExists()) {
 			this.dfs.notifyObservers();

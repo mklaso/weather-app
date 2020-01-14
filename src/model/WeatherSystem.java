@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ public class WeatherSystem extends Observable {
 	public boolean valid = false;
 	private String currentDay;
 	private String speedUnit = "m/s";
+	private int time24;
 	
 	//add documentation later
 	public WeatherSystem(String location) {
@@ -352,10 +354,27 @@ public class WeatherSystem extends Observable {
 		return this.convertTime("date");
 	}
 	
+	
 	public static String formatTime(Date dateObject) {
 	    SimpleDateFormat timeFormat = new SimpleDateFormat("h:mm a");
 	    timeFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 	    return timeFormat.format(dateObject);
+	}
+	
+	public static int getTimeIn24Hr(String timeToConvert) {
+	    
+	     SimpleDateFormat parseFormat = new SimpleDateFormat("hh:mm a");
+	     SimpleDateFormat timeFormat = new SimpleDateFormat("HHmm");
+	     Date convertedTime;
+	     
+		try {
+			convertedTime = parseFormat.parse(timeToConvert);
+			return Integer.parseInt(timeFormat.format(convertedTime));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
 	}
 	
 	public static String formatDate(Date dateObject) {
@@ -402,7 +421,11 @@ public class WeatherSystem extends Observable {
 	}
 	
 	private static double roundDecimal (double value, int precision) {
-	    int scale = (int) Math.pow(10, precision);
-	    return (double) Math.round(value * scale) / scale;
+	    int precisionScale = (int) Math.pow(10, precision);
+	    return (double) Math.round(value * precisionScale) / precisionScale;
+	}
+	
+	public static void main(String[] args) {
+		System.out.println(getTimeIn24Hr("8:30 a.m."));
 	}
 }
