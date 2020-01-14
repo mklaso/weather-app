@@ -217,7 +217,7 @@ public class WeatherSystem extends Observable {
 			
 		} catch(IOException e) {
 			this.valid = false;
-			System.out.println(e.getMessage());
+			//System.out.println(e.getMessage());
 		}
 	}
 	
@@ -371,14 +371,16 @@ public class WeatherSystem extends Observable {
 	    SimpleDateFormat parseFormat = new SimpleDateFormat("hh:mm a");
 	    SimpleDateFormat timeFormat = new SimpleDateFormat("HHmm");
 	    Date convertedTime;
-	     
-		try {
-			convertedTime = parseFormat.parse(timeToConvert);
-			return Integer.parseInt(timeFormat.format(convertedTime));
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	    
+	    if (!timeToConvert.equals("N/A")) {
+			try {
+				convertedTime = parseFormat.parse(timeToConvert);
+				return Integer.parseInt(timeFormat.format(convertedTime));
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	    }
 		return 0;
 	}
 	

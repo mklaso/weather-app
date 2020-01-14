@@ -3,6 +3,7 @@ package view;
 import javafx.stage.Stage;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.text.ParseException;
 import java.util.regex.Pattern;
 import controller.EnterKeypressHandler;
 import javafx.event.EventHandler;
@@ -297,8 +298,9 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 		double width = 75.0;
 		
 		WeatherSystem ws = this.dfs.getWeatherSystem();
+		int localTime;
+		localTime = WeatherSystem.getTimeIn24Hr(ws.getLocalTime());
 		
-		int localTime = WeatherSystem.getTimeIn24Hr(ws.getLocalTime());
 		int sunriseTime = WeatherSystem.getTimeIn24Hr(ws.getSunriseTime());
 		int sunsetTime = WeatherSystem.getTimeIn24Hr(ws.getSunsetTime());
 
