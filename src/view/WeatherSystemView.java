@@ -3,9 +3,9 @@ package view;
 import javafx.stage.Stage;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.text.ParseException;
 import java.util.regex.Pattern;
 import controller.EnterKeypressHandler;
+import controller.SaveLocationController;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -55,6 +55,7 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 	private VBox day3 = new VBox();
 	private VBox day4 = new VBox();
 	private VBox day5 = new VBox();
+	public VBox savedLocations = new VBox();
 	
 	public WeatherSystemView(Stage stage, DayForecastSystem dfs) {
 		this.stage = stage;
@@ -127,6 +128,8 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 		this.setImage(plusImage, "add.png", 40, 40);
 		HBox.setMargin(plusImage, new Insets(0, 10, 0, 0));
 		plusImage.setCursor(Cursor.HAND);
+		plusImage.addEventHandler(MouseEvent.MOUSE_CLICKED,
+				new SaveLocationController(savedLocations, locationField, searchButton));
 		
 		//toggleHbox holds the two toggle buttons for C/F
 		HBox toggleHbox = new HBox();
@@ -373,5 +376,8 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 		this.updateForecastVBox(this.dfs.getCurrentDay());
 		this.dfs.setForecastDay(5);
 		this.updateForecastVBox(this.dfs.getCurrentDay());
+		
+		//remove when full setup is done
+		System.out.println(savedLocations.getChildren());
 	}
 }
