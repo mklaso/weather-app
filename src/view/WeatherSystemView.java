@@ -55,7 +55,7 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 	private VBox day3 = new VBox();
 	private VBox day4 = new VBox();
 	private VBox day5 = new VBox();
-	public VBox savedLocations = new VBox();
+	public VBox savedLocations = new VBox(5);
 	
 	public WeatherSystemView(Stage stage, DayForecastSystem dfs) {
 		this.stage = stage;
@@ -68,6 +68,12 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 		
 		this.setStyle("-fx-background-color: transparent;");
 		setSize(this, 825, 725);
+		
+		AnchorPane.setTopAnchor(savedLocations, 100.0);
+		AnchorPane.setLeftAnchor(savedLocations, 30.0);
+		savedLocations.setStyle("-fx-background-color: beige;");
+		setSize(savedLocations, 232, 312);
+		savedLocations.setAlignment(Pos.CENTER);
 		
 		//searchImage setup
 		ImageView searchImage = new ImageView();
@@ -224,7 +230,7 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 		bottomHbox.getChildren().addAll(day1, day2, day3, day4, day5);
 		mainVbox.getChildren().addAll(topVbox, bottomHbox);
 		stackPane.getChildren().addAll(mainVbox);
-		this.getChildren().addAll(stackPane, searchImage);
+		this.getChildren().addAll(stackPane, searchImage, savedLocations);
 	}
 	
 	public void setImage(ImageView view, String endOfPath, double width, double height) {
