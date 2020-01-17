@@ -16,7 +16,7 @@ public class LoadSavedLocationsController implements EventHandler <MouseEvent> {
 	@Override
 	public void handle(MouseEvent arg0) {
 		
-		VBox savedLocations = this.view.getSavedLocations();
+		VBox savedLocations = this.view.getLocationsBox();
 		
 		if (!this.view.getChildren().contains(savedLocations)) {
 			this.view.getChildren().add(savedLocations);

@@ -4,9 +4,7 @@ import javafx.stage.Stage;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.regex.Pattern;
-import controller.EnterKeypressHandler;
-import controller.LoadSavedLocationsController;
-import controller.SaveLocationController;
+import controller.*;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -32,8 +30,7 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 	private DayForecastSystem dfs;
 	public TextField locationField = new TextField();
 	public Button searchButton = new Button();
-	public String averageFontSize = "-fx-font-size: 16;";
-	
+
 	//path relative to user's machine
 	private String path = new ImageResources().getImagePath();
 	private Label location = new Label("Unknown");
@@ -56,7 +53,8 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 	private VBox day3 = new VBox();
 	private VBox day4 = new VBox();
 	private VBox day5 = new VBox();
-	private VBox savedLocations = new VBox(5);
+	private VBox locationsBox = new VBox();
+	public VBox savedLocations = new VBox();
 	
 	public WeatherSystemView(Stage stage, DayForecastSystem dfs) {
 		this.stage = stage;
@@ -116,7 +114,7 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 		
 		//menu image setup
 		ImageView menuImage = new ImageView();
-		this.setImage(menuImage, "menu.png", 30, 30);
+		this.setImage(menuImage, "menu.png", 45, 45);
 		HBox.setMargin(menuImage, new Insets(0, 10, 0, 0));
 		menuImage.setCursor(Cursor.HAND);
 		menuImage.addEventHandler(MouseEvent.MOUSE_CLICKED, new LoadSavedLocationsController(this));
@@ -133,7 +131,7 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 		HBox.setMargin(plusImage, new Insets(0, 10, 0, 0));
 		plusImage.setCursor(Cursor.HAND);
 		plusImage.addEventHandler(MouseEvent.MOUSE_CLICKED,
-				new SaveLocationController(savedLocations, locationField, searchButton));
+				new SaveLocationController(this, locationField, searchButton));
 		
 		//toggleHbox holds the two toggle buttons for C/F
 		HBox toggleHbox = new HBox();
@@ -182,14 +180,14 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 		weather.setStyle("-fx-font-size: 18; -fx-font-weight: 500;");
 		weather.setTranslateY(-12.5);
 		
-		day.setStyle(averageFontSize);
-		date.setStyle(averageFontSize);
-		time.setStyle(averageFontSize);
+		day.setStyle(StyleSetter.averageFontSize);
+		date.setStyle(StyleSetter.averageFontSize);
+		time.setStyle(StyleSetter.averageFontSize);
 		minMaxFeelsTemp.setStyle("-fx-font-size: 15; -fx-font-style: italic; -fx-font-weight: 500;");
-		humidity.setStyle(averageFontSize);
-		wind.setStyle(averageFontSize);
-		sunrise.setStyle(averageFontSize);
-		sunset.setStyle(averageFontSize);
+		humidity.setStyle(StyleSetter.averageFontSize);
+		wind.setStyle(StyleSetter.averageFontSize);
+		sunrise.setStyle(StyleSetter.averageFontSize);
+		sunset.setStyle(StyleSetter.averageFontSize);
 		
 		//vbox that holds the 3 day/date/time
 		VBox container = new VBox();
@@ -245,18 +243,55 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 		}
 	}
 	
-	public VBox getSavedLocations() {
+	public VBox getLocationsBox() {
+		return this.locationsBox;
+	}
+	
+	public VBox getBox() {
 		return this.savedLocations;
 	}
 	
+	public void setExitButton(Button exitButton, double imageWidth, double imageHeight, double width, double height) {
+		exitButton.setStyle("-fx-background-color: grey; "
+				+ "-fx-background-radius: 0;");
+		ImageView exitImage = new ImageView();
+		this.setImage(exitImage, "exit.png", imageWidth, imageHeight);
+		exitButton.setGraphic(exitImage);
+		setSize(exitButton, width, height);
+		exitButton.setAlignment(Pos.CENTER);
+		exitButton.setOpacity(0.6);
+		StyleSetter.modifyColour(exitButton, "-fx-background-color: grey; "
+				+ "-fx-background-radius: 0;", "-fx-background-color: red; "
+						+ "-fx-background-radius: 0;");
+	}
+	
 	public void setSavedLocations() {
-		AnchorPane.setTopAnchor(savedLocations, 150.0);
-		AnchorPane.setLeftAnchor(savedLocations, 30.0);
-		savedLocations.setStyle("-fx-background-color: beige; -fx-border-color: black");
-		savedLocations.setOpacity(0.97);
-		setSize(savedLocations, 232, 312);
+		HBox exitHbox = new HBox();
+		setSize(exitHbox, 200, 40);
+		exitHbox.setAlignment(Pos.TOP_RIGHT);
+		exitHbox.setStyle("-fx-border-color: grey;");
+		
+		Label saved = new Label("Saved Locations");
+		saved.setPadding(new Insets(7, 21, 0, 0));
+		saved.setStyle(StyleSetter.averageFontSize + "-fx-font-weight: bold;");
+		
+		Button exitButton = new Button();
+		setExitButton(exitButton, 40, 40, 37, 37);
+		exitButton.addEventHandler(MouseEvent.MOUSE_CLICKED, 
+				new LoadSavedLocationsController(this));
+		
+		exitHbox.getChildren().addAll(saved, exitButton);
+		
 		savedLocations.setAlignment(Pos.CENTER);
-		savedLocations.setEffect(new DropShadow());
+		
+		AnchorPane.setTopAnchor(locationsBox, 5.0);
+		AnchorPane.setLeftAnchor(locationsBox, 5.0);
+		locationsBox.setStyle("-fx-background-color: beige; -fx-border-color: black");
+		locationsBox.setOpacity(0.97);
+		setSize(locationsBox, 200, 312);
+		locationsBox.setAlignment(Pos.TOP_CENTER);
+		locationsBox.setEffect(new DropShadow());
+		locationsBox.getChildren().addAll(exitHbox, savedLocations);
 	}
 	
 	public void setForecastVBox(VBox vbox, String d, String dt, String t, String w, String i) {
@@ -394,8 +429,5 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 		this.updateForecastVBox(this.dfs.getCurrentDay());
 		this.dfs.setForecastDay(5);
 		this.updateForecastVBox(this.dfs.getCurrentDay());
-		
-		//remove when full setup is done
-		System.out.println(savedLocations.getChildren());
 	}
 }

@@ -21,6 +21,8 @@ public class StyleSetter {
 	public static final String toggleStyle2 = "-fx-font-size: 18; -fx-background-radius: 0; "
 			+ "-fx-background-color: white; -fx-border-color: grey;";
 	
+	public static final String averageFontSize = "-fx-font-size: 16;";
+	
 	public static void modifyColour(Button button, String oldStyle, String newStyle) {
 		button.setOnMouseEntered(
 			event -> {
