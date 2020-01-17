@@ -27,7 +27,7 @@ import resources.ImageResources;
 public class WeatherSystemView extends AnchorPane implements Observer {
 	
 	private Stage stage;
-	private DayForecastSystem dfs;
+	public DayForecastSystem dfs;
 	public TextField locationField = new TextField();
 	public Button searchButton = new Button();
 
@@ -355,35 +355,37 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 		
 		WeatherSystem ws = this.dfs.getWeatherSystem();
 		int localTime;
-		localTime = WeatherSystem.getTimeIn24Hr(ws.getLocalTime());
-		
-		int sunriseTime = WeatherSystem.getTimeIn24Hr(ws.getSunriseTime());
-		int sunsetTime = WeatherSystem.getTimeIn24Hr(ws.getSunsetTime());
-
-		if (localTime >= sunriseTime && localTime < sunsetTime) {
-			if (cloudsDayNight.matcher(weatherCondition).matches()) {
-				this.setImage(forecastImage, "sunclouds.png", width, height);
-			} else if (clearsky.matcher(weatherCondition).matches()) {
-				this.setImage(forecastImage, "sun.png", width, height);
+		if (!ws.getLocation().equals("")) {
+			localTime = WeatherSystem.getTimeIn24Hr(ws.getLocalTime());
+			
+			int sunriseTime = WeatherSystem.getTimeIn24Hr(ws.getSunriseTime());
+			int sunsetTime = WeatherSystem.getTimeIn24Hr(ws.getSunsetTime());
+	
+			if (localTime >= sunriseTime && localTime < sunsetTime) {
+				if (cloudsDayNight.matcher(weatherCondition).matches()) {
+					this.setImage(forecastImage, "sunclouds.png", width, height);
+				} else if (clearsky.matcher(weatherCondition).matches()) {
+					this.setImage(forecastImage, "sun.png", width, height);
+				}
+			} else if (localTime >= sunsetTime || localTime <= sunriseTime) {
+				if (cloudsDayNight.matcher(weatherCondition).matches()) {
+					this.setImage(forecastImage, "nightclouds.png", width, height);
+				} else if (clearsky.matcher(weatherCondition).matches()) {
+					this.setImage(forecastImage, "moon.png", width, height);
+				}
 			}
-		} else if (localTime >= sunsetTime || localTime <= sunriseTime) {
-			if (cloudsDayNight.matcher(weatherCondition).matches()) {
-				this.setImage(forecastImage, "nightclouds.png", width, height);
-			} else if (clearsky.matcher(weatherCondition).matches()) {
-				this.setImage(forecastImage, "moon.png", width, height);
+			
+			if (clouds.matcher(weatherCondition).matches()) {
+				this.setImage(forecastImage, "clouds2.png", width, height);
+			} else if (mist.matcher(weatherCondition).matches()) {
+				this.setImage(forecastImage, "mist.png", width, height);
+			} else if (snow.matcher(weatherCondition).matches()) {
+				this.setImage(forecastImage, "snow.png", width, height);
+			} else if (rain.matcher(weatherCondition).matches()) {
+				this.setImage(forecastImage, "rain.png", width, height);
+			} else if (thunder.matcher(weatherCondition).matches()) {
+				this.setImage(forecastImage, "storm.png", width, height);
 			}
-		}
-		
-		if (clouds.matcher(weatherCondition).matches()) {
-			this.setImage(forecastImage, "clouds2.png", width, height);
-		} else if (mist.matcher(weatherCondition).matches()) {
-			this.setImage(forecastImage, "mist.png", width, height);
-		} else if (snow.matcher(weatherCondition).matches()) {
-			this.setImage(forecastImage, "snow.png", width, height);
-		} else if (rain.matcher(weatherCondition).matches()) {
-			this.setImage(forecastImage, "rain.png", width, height);
-		} else if (thunder.matcher(weatherCondition).matches()) {
-			this.setImage(forecastImage, "storm.png", width, height);
 		}
 	}
 	

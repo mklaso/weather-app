@@ -44,6 +44,8 @@ public class SaveLocationController implements EventHandler<MouseEvent>{
 	
 	@Override
 	public void handle(MouseEvent arg0) {
+		boolean valid = this.view.dfs.isValidSearch;
+		boolean searchOccurred = this.view.dfs.hasSearchOccurred;
 		Label locationToSave = new Label();
 		HBox saved = new HBox(3);
 		HBox holder = new HBox(10);
@@ -73,7 +75,8 @@ public class SaveLocationController implements EventHandler<MouseEvent>{
 	   	 });
    	 	
    	 	//add location only if it doesnt already exist and the list isn't already full
-   	 	if (!isLocationAlreadySaved(locationToSave) && savedLocations.getChildren().size() <= 10) { 
+   	 	if (!isLocationAlreadySaved(locationToSave) && savedLocations.getChildren().size() <= 10 
+   	 			&& valid && searchOccurred && !locationToSave.getText().equals("")) { 
 	   	 	locationToSave.setStyle(StyleSetter.averageFontSize + "-fx-font-weight: 500;");
 	   	 	locationToSave.setCursor(Cursor.HAND);
 	   	 	locationToSave.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {

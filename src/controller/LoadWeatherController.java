@@ -10,6 +10,7 @@ public class LoadWeatherController implements EventHandler<ActionEvent> {
 	
 	private TextField searchResult;
 	private DayForecastSystem dfs;
+	private String lastValidLocation = "";
 	
 	public LoadWeatherController(TextField searchResult, DayForecastSystem dfs) {
 		this.searchResult = searchResult;
@@ -19,18 +20,38 @@ public class LoadWeatherController implements EventHandler<ActionEvent> {
 	@Override
 	public void handle(ActionEvent event) {
 		
+		
 		String location = searchResult.getText();
 		
-		WeatherSystem ws = this.dfs.getWeatherSystem();
-		ws.setLocation(location);
-		ws.get5DayForecast();
-		
-	    this.dfs.updateWeatherSystem(ws);
-
-		if (this.dfs.forecastDataExists()) {
-			this.dfs.notifyObservers();
-		} else  {
-			this.dfs.setInvalid5DayForecast();
+		if (!location.equals("")) {
+			WeatherSystem ws = this.dfs.getWeatherSystem();
+			
+			ws.setLocation(location);
+			this.dfs.updateWeatherSystem(ws);
+			
+			boolean valid = ws.getValidity();
+		    
+		    if (valid) {
+		    	lastValidLocation = location;
+		    	this.dfs.isValidSearch = true;
+		    	ws.get5DayForecast();
+		    	this.dfs.hasSearchOccurred = true;
+		    	
+				if (this.dfs.forecastDataExists()) {
+					this.dfs.notifyObservers();
+				}
+				
+		    } else {
+		    	ws.setLocation(lastValidLocation);
+		    	this.dfs.isValidSearch = false;
+		    	ws.get5DayForecast();
+		    	this.dfs.hasSearchOccurred = false;
+		    	
+		    	if (this.dfs.forecastDataExists()) {
+					this.dfs.notifyObservers();
+				}
+		    }
+		    
 		}
 	}
 

@@ -11,6 +11,8 @@ public class DayForecastSystem extends Observable {
 	private String weather;
 	private String date;
 	private int dayNumber;
+	public boolean isValidSearch = false;
+	public boolean hasSearchOccurred = false;
 	
 	public DayForecastSystem(WeatherSystem ws) {
 		this.ws = ws;

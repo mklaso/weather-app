@@ -42,17 +42,20 @@ public class WeatherSystem extends Observable {
 	public WeatherSystem(String location) {
 		this.location = location;
 		this.setURLString(WEATHER_MODE);
-		this.obtainWeatherData();
 	}
 	
 	public void resetForecastData() {
 		this.forecastData.clear();
 	}
 	
+	public boolean getValidity() {
+		return this.valid;
+	}
 	public void resetWeatherData() {
 		this.measurementType = "&units=metric";
 		this.tempUnit = "°C";
 		this.result = "";
+		this.valid = false;
 		this.setURLString(WEATHER_MODE);
 		this.obtainWeatherData();
 	}
@@ -60,6 +63,7 @@ public class WeatherSystem extends Observable {
 	public void refreshWeatherData() {
 		this.result = "";
 		this.setURLString(WEATHER_MODE);
+		this.valid = false;
 		this.obtainWeatherData();
 	}
 	
@@ -212,12 +216,10 @@ public class WeatherSystem extends Observable {
 				this.valid = true;
 			} else {
 				this.valid = false;
-			}
-			
+			}		
 			
 		} catch(IOException e) {
 			this.valid = false;
-			//System.out.println(e.getMessage());
 		}
 	}
 	
