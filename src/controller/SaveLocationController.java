@@ -85,6 +85,7 @@ public class SaveLocationController implements EventHandler<MouseEvent>{
 			    	 searchedLocation.setText((locationToSave.getText()));
 			    	 searchButton.fire();
 			    	 searchedLocation.clear();
+			    	 searchedLocation.setText((locationToSave.getText()));
 			     }
 			});
 	   	 	deleteBox.getChildren().add(deleteLocation);
@@ -92,7 +93,7 @@ public class SaveLocationController implements EventHandler<MouseEvent>{
 	   	 	holder.getChildren().addAll(saved, deleteBox);
 	   	 	this.savedLocations.getChildren().add(holder);
    	 	} else {
-   	 		System.out.println("Location already saved.");
+   	 		System.out.println("Location is either already saved or invalid.");
    	 	}
 	}
 }

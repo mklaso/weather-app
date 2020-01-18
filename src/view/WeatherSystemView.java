@@ -9,9 +9,11 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -69,6 +71,42 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 		setSize(this, 825, 725);
 		
 		setSavedLocations();
+		
+		//infoImage setup
+		ImageView infoImage = new ImageView();
+		this.setImage(infoImage, "info.png", 45, 45);
+		infoImage.setCursor(Cursor.HAND);
+		AnchorPane.setTopAnchor(infoImage, 31.0);
+		AnchorPane.setLeftAnchor(infoImage, 700.0);
+		infoImage.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+		     @Override
+		     public void handle(MouseEvent event) {
+		    	 Alert infoAlert = new Alert(AlertType.INFORMATION);
+		    	 infoAlert.getDialogPane().setMinHeight(545);
+		    	 infoAlert.setTitle("Weather Application Information");
+				 infoAlert.setHeaderText("General Information");
+				 infoAlert.setContentText("In order to receive the most accurate location "
+				 		+ "information, make sure your search is in the format of:"
+				 		+ " City, Country Code \n"
+				 		+ "\n"
+				 		+ "Here are some examples: \n"
+				 		+ "Paris, FR \n"
+				 		+ "San Diego, US \n"
+				 		+ "Toronto, CA \n\n"
+				 		+ "If your search is not of the above format, it is not guaranteed "
+				 		+ "that you will get the weather info for the location you requested. \n"
+				 		+ "\nUsers have the option to save their searched location to a list"
+				 		+ ", up to 10 locations can be saved. Users can also delete existing saved locations "
+				 		+ "from their list. To save a location - a search must first be made, then depending on"
+				 		+ " if the requested location is a valid location, it will be added to the list.\n\n"
+				 		+ "Users have the option to switch between metric and imperial measurements. Simply"
+				 		+ " click on °C for metric and click on °F for imperial. This will adjust the currently"
+				 		+ " searched location, as well as future searches to the chosen system. This has an effect "
+				 		+ "on the temperatures (°C or °F) and the windspeed (m/s or mph). "
+				 		+ "");
+				 infoAlert.showAndWait();
+		     }
+		});
 		
 		//searchImage setup
 		ImageView searchImage = new ImageView();
@@ -226,7 +264,7 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 		bottomHbox.getChildren().addAll(day1, day2, day3, day4, day5);
 		mainVbox.getChildren().addAll(topVbox, bottomHbox);
 		stackPane.getChildren().addAll(mainVbox);
-		this.getChildren().addAll(stackPane, searchImage);
+		this.getChildren().addAll(stackPane, searchImage, infoImage);
 	}
 	
 	public void setImage(ImageView view, String endOfPath, double width, double height) {
