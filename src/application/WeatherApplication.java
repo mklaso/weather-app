@@ -3,8 +3,7 @@ package application;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import model.DayForecastSystem;
-import model.WeatherSystem;
+import model.*;
 import view.*;
 import controller.*;
 import javafx.scene.Scene;
@@ -12,6 +11,8 @@ import javafx.scene.Scene;
 public class WeatherApplication extends Application {
 	
 	Stage window;
+	private AddressObtainer aoObtainer = new AddressObtainer();
+	SqLiteConnector database = new SqLiteConnector();
 	
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -43,9 +44,22 @@ public class WeatherApplication extends Application {
 		window.setScene(weatherScene);
 		window.setTitle("Weather Application");
 		window.setResizable(false); 
+		
+//		System.out.println(aoObtainer.getMACAddress());
+		String macAddress = aoObtainer.getMACAddress();
 
 		// LAUNCH THE GUI
 		window.show();
+		
+		//database stuff
+		database.connect();
+		database.connectionStatus();
+		database.login();
+		
+		if (!database.isRegistered(macAddress)) {
+			database.registerUser(macAddress);
+			System.out.println("User registered!");
+		}
 	}
 	
 	public static void main(String[] args) {

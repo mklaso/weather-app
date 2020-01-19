@@ -1,7 +1,8 @@
 package model;
-import java.net.*; 
+import java.net.*;
 
 public class AddressObtainer {
+	
 	private InetAddress ip;
 	
 	public String getIPAddress() {
@@ -40,12 +41,6 @@ public class AddressObtainer {
 		}
 		return "could not get MAC address.";
 	}
-    public static void main(String args[]) { 
-    	AddressObtainer ao = new AddressObtainer();
-    	System.out.println(ao.getMACAddress());
-    	System.out.println(ao.getIPAddress()); 
-   }
-
 }
 
 
