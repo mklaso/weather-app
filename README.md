@@ -9,26 +9,19 @@ This weather app was developed with Java 11 and the GUI development was done wit
   2. the 5 day forecast for the requested location (less details: day, temperature, weather status and a weather icon)
  - users can switch between metric and imperial for temperatures/wind speed
 - users can choose to save locations for easier/quicker lookup at a later time (up to 10), these locations can also be deleted at any time
-- users who download the application will have their previous settings saved, i.e their "saved locations" will remain even if they close the app, users can also set a favourite location, so that when the application is run, it is the base location displayed.
-
-
-## How It Works ##
-- The OpenWeatherMap API is used to obtain the weather/forecast data that is displayed on search.
-- A SqLite database stores the MAC address of the user locally to ensure user settings within the application are saved.
-
+- users will have their previous settings saved, i.e their "saved locations" will remain even if they close the app, users can also set a favourite location, so that when the application is run, it is the base location displayed.
 
 ## Configuration / Installation ##
-There are a couple of ways to go about the setup of this weather app.
+There are two ways to use the application.
 
 ### Approach 1 ###
 - download the executable weather application. (weatherapp.exe)
 - link here: //to be added when done the entire project
 
-
 ### Approach 2 ###
 - clone the repo
-- install Google's GSON .jar file
-- install SqLite .jar
+- install Google's GSON .jar file (in repo)
+- install SqLite .jar (in repo)
 - install JavaFX 8 (.jars included)
 - install Java SDK 11
 
