@@ -1,5 +1,7 @@
 package controller;
 
+import java.sql.SQLException;
+
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -12,6 +14,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import model.SqLiteConnector;
 import view.StyleSetter;
 import view.WeatherSystemView;
 
@@ -21,6 +24,7 @@ public class SaveLocationController implements EventHandler<MouseEvent>{
 	private TextField searchedLocation;
 	private Button searchButton;
 	private WeatherSystemView view;
+	SqLiteConnector database = new SqLiteConnector();
 	
 	public SaveLocationController(WeatherSystemView view, TextField searchedLocation, 
 			Button searchButton) {
@@ -92,6 +96,14 @@ public class SaveLocationController implements EventHandler<MouseEvent>{
 	   	 	saved.getChildren().addAll(pinpointImage, locationToSave);
 	   	 	holder.getChildren().addAll(saved, deleteBox);
 	   	 	this.savedLocations.getChildren().add(holder);
+	   	 	try {
+				this.view.database.registerLocation(searchedLocation.getText());
+				System.out.println(searchedLocation.getText());
+				System.out.println("location has been registered");
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
    	 	} else {
    	 		System.out.println("Location is either already saved or invalid.");
    	 	}

@@ -83,6 +83,71 @@ public class SqLiteConnector {
 		}
 	}
 	
+	public void registerLocation(String location) throws SQLException {
+		PreparedStatement preparedStatement = null;
+		PreparedStatement test = null;
+		ResultSet resultSet;
+		String test1 = "select * from table_user_info";
+		int locationCounter = 2;
+			
+		try {
+			
+			test = con.prepareStatement(test1);
+			resultSet = test.executeQuery();
+			
+			//checking for empty spot in database to add a location
+			int i = 0;
+			
+			if (resultSet.next()) {
+				for (i = locationCounter; i <= 11; i++) {
+					if (resultSet.getString(i) != null) {
+						System.out.println("location" + (i-1) + ": " + resultSet.getString(i) + "\n");
+					} else {
+						locationCounter = i-1;
+						System.out.println("location" + (i-1) + ": not set currently.\n");
+						break;
+					}
+					
+					if (resultSet.getString(i) != null && i == 11) {
+					       locationCounter = 12; //12 indicates no empty location found
+					}
+				}
+			}
+			System.out.println(locationCounter);
+			
+			//update location value in database if space is available
+			if (locationCounter != 12) {
+				String sql = "UPDATE table_user_info SET Location" + locationCounter + " = ?";
+				preparedStatement = con.prepareStatement(sql);
+				preparedStatement.setString(1, location);
+				preparedStatement.executeUpdate();
+			} else {
+				System.out.println("Max number of locations. Please delete one to add another.");
+			}
+			
+			//after back from skiing trip:
+			
+			// create a list/maybe hashmap might be best here actually
+			// loop through all the values in the resultSet, and if they're not null -> add them to the
+			// hashmap/list
+			// then later, with the delete functionality, make it so that when that item from the list is 
+			// deleted (compare the getText() from the X box clicked on to the hashmap/list location), then
+			// also delete that value from the database (just set the location to null)
+			
+			// then, based off the list/hashmap values, loop through them and on launch of the application,
+			// add these (hboxes/locations/delete buttons) to the locations list/box. (so that they're loaded
+			// from the database on launch).
+			
+			
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		} finally {
+			if (locationCounter != 12) {
+				preparedStatement.close();
+			}
+		}
+	}
+	
 	//logs in if the user exists
 	public void login() {
 		AddressObtainer aoObtainer = new AddressObtainer();

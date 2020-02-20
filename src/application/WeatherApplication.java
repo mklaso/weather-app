@@ -12,7 +12,6 @@ public class WeatherApplication extends Application {
 	
 	Stage window;
 	private AddressObtainer aoObtainer = new AddressObtainer();
-	SqLiteConnector database = new SqLiteConnector();
 	
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -52,12 +51,12 @@ public class WeatherApplication extends Application {
 		window.show();
 		
 		//database stuff
-		database.connect();
-		database.connectionStatus();
-		database.login();
+		weatherView.database.connect();
+		weatherView.database.connectionStatus();
+		weatherView.database.login();
 		
-		if (!database.isRegistered(macAddress)) {
-			database.registerUser(macAddress);
+		if (!weatherView.database.isRegistered(macAddress)) {
+			weatherView.database.registerUser(macAddress);
 			System.out.println("User registered!");
 		}
 	}

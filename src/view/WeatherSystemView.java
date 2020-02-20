@@ -58,6 +58,8 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 	private VBox locationsBox = new VBox();
 	public VBox savedLocations = new VBox();
 	
+	public SqLiteConnector database = new SqLiteConnector();
+	
 	public WeatherSystemView(Stage stage, DayForecastSystem dfs) {
 		this.stage = stage;
 		this.dfs = dfs;
