@@ -62,7 +62,11 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 	
 	public SqLiteConnector database = new SqLiteConnector();
 	public ArrayList<String> locationsList = new ArrayList<String>();
+	public SaveLocationController locationController = new SaveLocationController(this, locationField, searchButton);
 	
+	public void setLocationController(WeatherSystemView view, TextField text, Button b) {
+		this.locationController = new SaveLocationController(view, text, b);
+	}
 	public WeatherSystemView(Stage stage, DayForecastSystem dfs) {
 		this.stage = stage;
 		this.dfs = dfs;
@@ -173,8 +177,7 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 		this.setImage(plusImage, "add.png", 40, 40);
 		HBox.setMargin(plusImage, new Insets(0, 10, 0, 0));
 		plusImage.setCursor(Cursor.HAND);
-		plusImage.addEventHandler(MouseEvent.MOUSE_CLICKED,
-				new SaveLocationController(this, locationField, searchButton));
+		plusImage.addEventHandler(MouseEvent.MOUSE_CLICKED, locationController);
 		
 		//toggleHbox holds the two toggle buttons for C/F
 		HBox toggleHbox = new HBox();

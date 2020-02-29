@@ -1,6 +1,7 @@
 package controller;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -25,6 +26,7 @@ public class SaveLocationController implements EventHandler<MouseEvent>{
 	private Button searchButton;
 	private WeatherSystemView view;
 	SqLiteConnector database = new SqLiteConnector();
+	public String deletedString = "nothing";
 	
 	public SaveLocationController(WeatherSystemView view, TextField searchedLocation, 
 			Button searchButton) {
@@ -33,7 +35,7 @@ public class SaveLocationController implements EventHandler<MouseEvent>{
 		this.searchedLocation = searchedLocation;
 		this.searchButton = searchButton;
 	}
-	
+
 	public void setLocation(String s) {
 		this.searchedLocation.setText(s);
 	}
@@ -54,7 +56,23 @@ public class SaveLocationController implements EventHandler<MouseEvent>{
 		return false;
 	}
 	
+	//testing
+	public ArrayList<String> boxList = new ArrayList<String>();
+	
 	public void saveLocation() {
+		
+		for (Node location: this.savedLocations.getChildren()) {
+			HBox holder = (HBox) location;
+			HBox locationBox = (HBox) holder.getChildren().get(0);
+   	 		Label savedLocation = (Label) locationBox.getChildren().get(1);
+   	 		
+   	 		if (boxList.contains(savedLocation.getText())) {
+   	 			continue;
+   	 		} else {
+   	 			boxList.add(savedLocation.getText());
+   	 		}
+		}
+		
 		Label locationToSave = new Label();
 		HBox saved = new HBox(3);
 		HBox holder = new HBox(10);
@@ -77,9 +95,15 @@ public class SaveLocationController implements EventHandler<MouseEvent>{
    	 	deleteLocation.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
    	 		@Override
 		     public void handle(MouseEvent event) {
-		    	 if (savedLocations.getChildren().contains(holder)) {
-		    		 savedLocations.getChildren().remove(holder);
-		    	 }
+   	 			//if (savedLocations.getChildren().size() != 0) {
+			    	if (savedLocations.getChildren().contains(holder)) {
+			    		HBox locationBox = (HBox) holder.getChildren().get(0);
+			    	 	Label savedLocation = (Label) locationBox.getChildren().get(1);
+			    	 	setDeletedString(savedLocation.getText());
+			    		savedLocations.getChildren().remove(holder);
+			    		remove(deletedString);
+			    	}
+   	 			//}
    	 		}
 	   	 });
    	 	
@@ -102,6 +126,15 @@ public class SaveLocationController implements EventHandler<MouseEvent>{
 	   	 	holder.getChildren().addAll(saved, deleteBox);
 	   	 	this.savedLocations.getChildren().add(holder);
    	 	}
+	}
+	
+	public void setDeletedString(String s) {
+		this.deletedString = s;
+	}
+	
+	public void remove(String deletedLocation) {
+		this.view.database.removeLocation(this.view.locationsList, deletedLocation);
+   	 	System.out.println(deletedLocation + " has been removed.");
 	}
 	
 	@Override
@@ -130,8 +163,13 @@ public class SaveLocationController implements EventHandler<MouseEvent>{
    	 	deleteLocation.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
    	 		@Override
 		     public void handle(MouseEvent event) {
+   	 				
 		    	 if (savedLocations.getChildren().contains(holder)) {
-		    		 savedLocations.getChildren().remove(holder);
+		    		 HBox locationBox = (HBox) holder.getChildren().get(0);
+			    	 Label savedLocation = (Label) locationBox.getChildren().get(1);
+			    	 setDeletedString(savedLocation.getText());
+			    	 savedLocations.getChildren().remove(holder);
+			    	 remove(deletedString);
 		    	 }
    	 		}
 	   	 });

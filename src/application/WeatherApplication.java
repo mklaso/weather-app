@@ -32,8 +32,6 @@ public class WeatherApplication extends Application {
 		
 		LoadWeatherController weatherController = new LoadWeatherController
 				(weatherView.locationField, forecastModel);
-		SaveLocationController locationController = new SaveLocationController
-				(weatherView, weatherView.locationField, weatherView.searchButton);
 		
 		
 		weatherView.searchButton.setOnAction(weatherController);
@@ -67,13 +65,11 @@ public class WeatherApplication extends Application {
 		
 		//load database locations for user
 		weatherView.database.setDbLocationsData(weatherView.locationsList);
+		weatherView.setLocationController(weatherView, weatherView.locationField, weatherView.searchButton);
 		
 		for (int i = 0; i < weatherView.locationsList.size(); i++) {
-			locationController.setLocation(weatherView.locationsList.get(i));
-			System.out.println(locationController.getLocation());
-			locationController.saveLocation();
-			
-			//System.out.println(i+1 + ": " + weatherView.locationsList.get(i) + "\n");
+			weatherView.locationController.setLocation(weatherView.locationsList.get(i));
+			weatherView.locationController.saveLocation();
 		}
 	}
 	

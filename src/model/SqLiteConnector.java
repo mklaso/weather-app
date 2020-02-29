@@ -170,8 +170,32 @@ public class SqLiteConnector {
 		}
 	}
 	
-	public void removeLocation(String s) {
+	public void removeLocation(ArrayList<String> locationsList, String locationToDelete) {
+		PreparedStatement preparedStatement = null;
+		boolean exists = false;
 		
+		int i;
+		for (i = 0; i < locationsList.size(); i++) {
+			if (locationsList.get(i).toLowerCase().equals(locationToDelete.toLowerCase())) {
+				exists = true;
+				break;
+			}
+		}
+		i++;
+		System.out.println("location" + i + " in the database");
+		
+		if (exists) {
+			String sql = "UPDATE table_user_info SET Location" + i + " = NULL";
+			try {
+				preparedStatement = con.prepareStatement(sql);
+				preparedStatement.executeUpdate();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else {
+			System.out.println("Error - Trying to remove a location that does not exist.");
+		}
 	}
 	
 	//logs in if the user exists
