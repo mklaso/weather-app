@@ -34,6 +34,14 @@ public class SaveLocationController implements EventHandler<MouseEvent>{
 		this.searchButton = searchButton;
 	}
 	
+	public void setLocation(String s) {
+		this.searchedLocation.setText(s);
+	}
+	
+	public String getLocation() {
+		return this.searchedLocation.getText();
+	}
+	
 	public boolean isLocationAlreadySaved(Label locationToAdd) {
 		for (Node location: this.savedLocations.getChildren()) {
 			HBox holder = (HBox) location;
@@ -44,6 +52,56 @@ public class SaveLocationController implements EventHandler<MouseEvent>{
    	 		}
    	 	}
 		return false;
+	}
+	
+	public void saveLocation() {
+		Label locationToSave = new Label();
+		HBox saved = new HBox(3);
+		HBox holder = new HBox(10);
+		HBox deleteBox = new HBox();
+		deleteBox.setAlignment(Pos.CENTER_RIGHT);
+
+		saved.setAlignment(Pos.CENTER_LEFT);
+		holder.setStyle("-fx-background-color:rgba(211,211,211, 0.5); -fx-border-color: black;");
+
+		
+		ImageView pinpointImage = new ImageView();
+		view.setImage(pinpointImage, "marker.png", 20, 20);
+		
+   	 	locationToSave.setText(searchedLocation.getText());
+   	 	
+   	 	Button deleteLocation = new Button();
+   	 	this.view.setExitButton(deleteLocation, 17.5, 17.5, 25, 25);
+   	 	
+   	 	
+   	 	deleteLocation.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+   	 		@Override
+		     public void handle(MouseEvent event) {
+		    	 if (savedLocations.getChildren().contains(holder)) {
+		    		 savedLocations.getChildren().remove(holder);
+		    	 }
+   	 		}
+	   	 });
+   	 	
+   	 	//add location only if it doesnt already exist and the list isn't already full
+   	 	if (!isLocationAlreadySaved(locationToSave) && savedLocations.getChildren().size() <= 10 
+   	 			&& !locationToSave.getText().equals("")) { 
+	   	 	locationToSave.setStyle(StyleSetter.averageFontSize + "-fx-font-weight: 500;");
+	   	 	locationToSave.setCursor(Cursor.HAND);
+	   	 	locationToSave.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+			     @Override
+			     public void handle(MouseEvent event) {
+			    	 searchedLocation.setText((locationToSave.getText()));
+			    	 searchButton.fire();
+			    	 searchedLocation.clear();
+			    	 searchedLocation.setText((locationToSave.getText()));
+			     }
+			});
+	   	 	deleteBox.getChildren().add(deleteLocation);
+	   	 	saved.getChildren().addAll(pinpointImage, locationToSave);
+	   	 	holder.getChildren().addAll(saved, deleteBox);
+	   	 	this.savedLocations.getChildren().add(holder);
+   	 	}
 	}
 	
 	@Override
@@ -79,7 +137,7 @@ public class SaveLocationController implements EventHandler<MouseEvent>{
 	   	 });
    	 	
    	 	//add location only if it doesnt already exist and the list isn't already full
-   	 	if (!isLocationAlreadySaved(locationToSave) && savedLocations.getChildren().size() <= 10 
+   	 	if (!isLocationAlreadySaved(locationToSave) && savedLocations.getChildren().size() <= 10
    	 			&& valid && searchOccurred && !locationToSave.getText().equals("")) { 
 	   	 	locationToSave.setStyle(StyleSetter.averageFontSize + "-fx-font-weight: 500;");
 	   	 	locationToSave.setCursor(Cursor.HAND);

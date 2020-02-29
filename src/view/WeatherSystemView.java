@@ -58,6 +58,7 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 	private VBox day5 = new VBox();
 	private VBox locationsBox = new VBox();
 	public VBox savedLocations = new VBox();
+	public ImageView plusImage = new ImageView();
 	
 	public SqLiteConnector database = new SqLiteConnector();
 	public ArrayList<String> locationsList = new ArrayList<String>();
@@ -168,7 +169,7 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 		locationField.setOnKeyPressed(new EnterKeypressHandler(searchButton));
 		
 		//image to add locations
-		ImageView plusImage = new ImageView();
+		//ImageView plusImage = new ImageView();
 		this.setImage(plusImage, "add.png", 40, 40);
 		HBox.setMargin(plusImage, new Insets(0, 10, 0, 0));
 		plusImage.setCursor(Cursor.HAND);

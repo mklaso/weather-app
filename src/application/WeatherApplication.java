@@ -7,6 +7,8 @@ import model.*;
 import view.*;
 import controller.*;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.input.MouseEvent;
 
 public class WeatherApplication extends Application {
 	
@@ -30,11 +32,15 @@ public class WeatherApplication extends Application {
 		
 		LoadWeatherController weatherController = new LoadWeatherController
 				(weatherView.locationField, forecastModel);
+		SaveLocationController locationController = new SaveLocationController
+				(weatherView, weatherView.locationField, weatherView.searchButton);
+		
 		
 		weatherView.searchButton.setOnAction(weatherController);
-		
 		weatherView.tb.setOnAction(new ToggleButtonController(weatherView.tb, weatherView.tb2, weatherController));
 		weatherView.tb2.setOnAction(new ToggleButtonController(weatherView.tb, weatherView.tb2, weatherController));
+		
+		
 		
 		// SCENES SETUP
 		Scene weatherScene = new Scene(weatherView);
@@ -63,7 +69,11 @@ public class WeatherApplication extends Application {
 		weatherView.database.setDbLocationsData(weatherView.locationsList);
 		
 		for (int i = 0; i < weatherView.locationsList.size(); i++) {
-			System.out.println(i+1 + ": " + weatherView.locationsList.get(i) + "\n");
+			locationController.setLocation(weatherView.locationsList.get(i));
+			System.out.println(locationController.getLocation());
+			locationController.saveLocation();
+			
+			//System.out.println(i+1 + ": " + weatherView.locationsList.get(i) + "\n");
 		}
 	}
 	

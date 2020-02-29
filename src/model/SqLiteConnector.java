@@ -170,6 +170,10 @@ public class SqLiteConnector {
 		}
 	}
 	
+	public void removeLocation(String s) {
+		
+	}
+	
 	//logs in if the user exists
 	public void login() {
 		AddressObtainer aoObtainer = new AddressObtainer();
