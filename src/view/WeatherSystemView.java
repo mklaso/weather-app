@@ -3,6 +3,7 @@ package view;
 import javafx.stage.Stage;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.regex.Pattern;
 import controller.*;
 import javafx.event.EventHandler;
@@ -59,6 +60,7 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 	public VBox savedLocations = new VBox();
 	
 	public SqLiteConnector database = new SqLiteConnector();
+	public ArrayList<String> locationsList = new ArrayList<String>();
 	
 	public WeatherSystemView(Stage stage, DayForecastSystem dfs) {
 		this.stage = stage;

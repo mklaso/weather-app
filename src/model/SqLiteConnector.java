@@ -1,5 +1,6 @@
 package model;
 import java.sql.*;
+import java.util.ArrayList;
 
 import model.AddressObtainer;
 
@@ -83,6 +84,29 @@ public class SqLiteConnector {
 		}
 	}
 	
+	public void setDbLocationsData(ArrayList<String> locationsList) { 
+		PreparedStatement ps = null;
+		ResultSet resultSet;
+		String query = "select * from table_user_info";
+			
+		try {
+			
+			ps = con.prepareStatement(query);
+			resultSet = ps.executeQuery();
+			
+			if (resultSet.next()) {
+				for (int i = 2; i <= 11; i++) {
+					if (resultSet.getString(i) != null) {
+						locationsList.add(resultSet.getString(i));
+					}
+				}
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	
+	}
+	
 	public void registerLocation(String location) throws SQLException {
 		PreparedStatement preparedStatement = null;
 		PreparedStatement test = null;
@@ -101,10 +125,10 @@ public class SqLiteConnector {
 			if (resultSet.next()) {
 				for (i = locationCounter; i <= 11; i++) {
 					if (resultSet.getString(i) != null) {
-						System.out.println("location" + (i-1) + ": " + resultSet.getString(i) + "\n");
+						//System.out.println("location" + (i-1) + ": " + resultSet.getString(i) + "\n");
 					} else {
 						locationCounter = i-1;
-						System.out.println("location" + (i-1) + ": not set currently.\n");
+						//System.out.println("location" + (i-1) + ": not set currently.\n");
 						break;
 					}
 					
@@ -113,7 +137,6 @@ public class SqLiteConnector {
 					}
 				}
 			}
-			System.out.println(locationCounter);
 			
 			//update location value in database if space is available
 			if (locationCounter != 12) {
@@ -124,8 +147,7 @@ public class SqLiteConnector {
 			} else {
 				System.out.println("Max number of locations. Please delete one to add another.");
 			}
-			
-			//after back from skiing trip:
+
 			
 			// create a list/maybe hashmap might be best here actually
 			// loop through all the values in the resultSet, and if they're not null -> add them to the

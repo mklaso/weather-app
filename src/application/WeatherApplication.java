@@ -43,8 +43,7 @@ public class WeatherApplication extends Application {
 		window.setScene(weatherScene);
 		window.setTitle("Weather Application");
 		window.setResizable(false); 
-		
-//		System.out.println(aoObtainer.getMACAddress());
+
 		String macAddress = aoObtainer.getMACAddress();
 
 		// LAUNCH THE GUI
@@ -58,6 +57,13 @@ public class WeatherApplication extends Application {
 		if (!weatherView.database.isRegistered(macAddress)) {
 			weatherView.database.registerUser(macAddress);
 			System.out.println("User registered!");
+		}
+		
+		//load database locations for user
+		weatherView.database.setDbLocationsData(weatherView.locationsList);
+		
+		for (int i = 0; i < weatherView.locationsList.size(); i++) {
+			System.out.println(i+1 + ": " + weatherView.locationsList.get(i) + "\n");
 		}
 	}
 	
