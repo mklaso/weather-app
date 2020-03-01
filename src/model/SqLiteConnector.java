@@ -113,6 +113,7 @@ public class SqLiteConnector {
 		ResultSet resultSet;
 		String test1 = "select * from table_user_info";
 		int locationCounter = 2;
+		boolean duplicate = false;
 			
 		try {
 			
@@ -124,14 +125,18 @@ public class SqLiteConnector {
 			
 			if (resultSet.next()) {
 				for (i = locationCounter; i <= 11; i++) {
-					if (resultSet.getString(i) != null) {
-						//System.out.println("location" + (i-1) + ": " + resultSet.getString(i) + "\n");
-					} else {
+					if (resultSet.getString(i) == null) {
 						locationCounter = i-1;
-						//System.out.println("location" + (i-1) + ": not set currently.\n");
 						break;
 					}
 					
+					// makes sure duplicates do not exist within database
+					if (resultSet.getString(i).toLowerCase().equals(location.toLowerCase())) {
+						duplicate = true;
+						break;
+					}
+					
+					// checks if all location entries are occupied
 					if (resultSet.getString(i) != null && i == 11) {
 					       locationCounter = 12; //12 indicates no empty location found
 					}
@@ -139,7 +144,7 @@ public class SqLiteConnector {
 			}
 			
 			//update location value in database if space is available
-			if (locationCounter != 12) {
+			if (locationCounter != 12 && !duplicate) {
 				String sql = "UPDATE table_user_info SET Location" + locationCounter + " = ?";
 				preparedStatement = con.prepareStatement(sql);
 				preparedStatement.setString(1, location);
@@ -147,18 +152,6 @@ public class SqLiteConnector {
 			} else {
 				System.out.println("Max number of locations. Please delete one to add another.");
 			}
-
-			
-			// create a list/maybe hashmap might be best here actually
-			// loop through all the values in the resultSet, and if they're not null -> add them to the
-			// hashmap/list
-			// then later, with the delete functionality, make it so that when that item from the list is 
-			// deleted (compare the getText() from the X box clicked on to the hashmap/list location), then
-			// also delete that value from the database (just set the location to null)
-			
-			// then, based off the list/hashmap values, loop through them and on launch of the application,
-			// add these (hboxes/locations/delete buttons) to the locations list/box. (so that they're loaded
-			// from the database on launch).
 			
 			
 		} catch (SQLException e) {
@@ -182,7 +175,6 @@ public class SqLiteConnector {
 			}
 		}
 		i++;
-		System.out.println("location" + i + " in the database");
 		
 		if (exists) {
 			String sql = "UPDATE table_user_info SET Location" + i + " = NULL";
