@@ -50,6 +50,7 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 	private ImageView currentWeatherImage = new ImageView();
 	public Button tb = new Button("°C");
 	public Button tb2 = new Button("°F");
+	public Button favouriteLocationButton = new Button("Set Favourite");
 
 	private VBox day1 = new VBox();
 	private VBox day2 = new VBox();
@@ -60,13 +61,16 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 	public VBox savedLocations = new VBox();
 	public ImageView plusImage = new ImageView();
 	
-	public SqLiteConnector database = new SqLiteConnector();
+	public DatabaseConnector database = new DatabaseConnector();
 	public ArrayList<String> locationsList = new ArrayList<String>();
 	public SaveLocationController locationController = new SaveLocationController(this, locationField, searchButton);
+	public String favouriteLocation = "none";
+	public SetFavouriteController favouriteController = new SetFavouriteController(this, locationField);
 	
 	public void setLocationController(WeatherSystemView view, TextField text, Button b) {
 		this.locationController = new SaveLocationController(view, text, b);
 	}
+	
 	public WeatherSystemView(Stage stage, DayForecastSystem dfs) {
 		this.stage = stage;
 		this.dfs = dfs;
@@ -190,6 +194,15 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 		tb2.setStyle(StyleSetter.toggleStyle2);
 		tb2.setCursor(Cursor.HAND);
 		
+		
+		favouriteLocationButton.setCursor(Cursor.HAND);
+		favouriteLocationButton.setStyle(StyleSetter.REGULAR);
+		AnchorPane.setTopAnchor(favouriteLocationButton, 31.0);
+		AnchorPane.setLeftAnchor(favouriteLocationButton, 75.0);
+		StyleSetter.modifyColour(favouriteLocationButton, StyleSetter.REGULAR, StyleSetter.HIGHLIGHT);
+		favouriteLocationButton.setOnAction(favouriteController);
+		
+		
 		toggleHbox.getChildren().addAll(tb, tb2);
 		searchBox.getChildren().addAll(menuImage, locationField, plusImage, toggleHbox);
 		
@@ -272,7 +285,7 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 		bottomHbox.getChildren().addAll(day1, day2, day3, day4, day5);
 		mainVbox.getChildren().addAll(topVbox, bottomHbox);
 		stackPane.getChildren().addAll(mainVbox);
-		this.getChildren().addAll(stackPane, searchImage, infoImage);
+		this.getChildren().addAll(stackPane, searchImage, infoImage, favouriteLocationButton);
 	}
 	
 	public void setImage(ImageView view, String endOfPath, double width, double height) {

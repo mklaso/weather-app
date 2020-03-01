@@ -17,6 +17,10 @@ public class LoadWeatherController implements EventHandler<ActionEvent> {
 		this.setDfs(dfs);
 	}
 	
+	public void setSearchResult(String s) {
+		this.searchResult.setText(s);
+	}
+	
 	@Override
 	public void handle(ActionEvent event) {
 		

@@ -6,10 +6,10 @@ public class StyleSetter {
 
 	Stage stage;
 	
-	public static final String HIGHLIGHT = "-fx-background-color: rgb(145, 255, 255);"
+	public static final String HIGHLIGHT = "-fx-background-color: rgb(191, 198, 253);"
 			+ " -fx-font-size:16;";
 			
-	public static final String REGULAR = "-fx-background-color: rgb(193, 255, 255);"
+	public static final String REGULAR = "-fx-background-color: rgb(220, 255, 255);"
 			+ " -fx-font-size:16;";
 	
 	public static final String TEXT = "-fx-font-size:16;"

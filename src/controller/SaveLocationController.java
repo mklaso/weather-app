@@ -2,9 +2,7 @@ package controller;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -15,7 +13,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import model.SqLiteConnector;
 import view.StyleSetter;
 import view.WeatherSystemView;
 
@@ -25,7 +22,6 @@ public class SaveLocationController implements EventHandler<MouseEvent>{
 	private TextField searchedLocation;
 	private Button searchButton;
 	private WeatherSystemView view;
-	SqLiteConnector database = new SqLiteConnector();
 	public String deletedString = "nothing";
 	
 	public SaveLocationController(WeatherSystemView view, TextField searchedLocation, 
@@ -175,7 +171,7 @@ public class SaveLocationController implements EventHandler<MouseEvent>{
 	   	 });
    	 	
    	 	//add location only if it doesnt already exist and the list isn't already full
-   	 	if (!isLocationAlreadySaved(locationToSave) && savedLocations.getChildren().size() <= 10
+   	 	if (!isLocationAlreadySaved(locationToSave) && savedLocations.getChildren().size() < 10
    	 			&& valid && searchOccurred && !locationToSave.getText().equals("")) { 
 	   	 	locationToSave.setStyle(StyleSetter.averageFontSize + "-fx-font-weight: 500;");
 	   	 	locationToSave.setCursor(Cursor.HAND);

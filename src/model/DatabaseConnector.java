@@ -3,8 +3,9 @@ import java.sql.*;
 import java.util.ArrayList;
 
 import model.AddressObtainer;
+import view.WeatherSystemView;
 
-public class SqLiteConnector {
+public class DatabaseConnector {
 	public Connection con = null;
 	
 	//connects to the database
@@ -67,7 +68,6 @@ public class SqLiteConnector {
 	}
 	
 	//if user is not recognized within database
-	//will set favouritelocation on buttonclick from GUI later
 	public void registerUser(String macAddress) throws SQLException {
 		PreparedStatement preparedStatement = null;
 		String insert = "INSERT INTO table_user_info(MACAddress) VALUES(?)";
@@ -105,6 +105,44 @@ public class SqLiteConnector {
 			System.out.println(e.getMessage());
 		}
 	
+	}
+	
+	public boolean checkFavouriteExists(WeatherSystemView view) {
+		PreparedStatement ps = null;
+		ResultSet resultSet;
+		String query = "select FavouriteLocation from table_user_info";
+			
+			try {
+				ps = con.prepareStatement(query);
+				resultSet = ps.executeQuery();
+				
+				//checks if a favouriteLocation is set within database
+				if (resultSet.getString(1) != null) {
+					view.favouriteLocation = resultSet.getString(1);
+					return true;
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return false;
+	}
+	
+	public void setFavouriteLocation(String location) {
+		PreparedStatement preparedStatement = null;
+		
+		//update location value in database if space is available
+		String sql = "UPDATE table_user_info SET FavouriteLocation = ?";
+		try {
+			preparedStatement = con.prepareStatement(sql);
+			preparedStatement.setString(1, location);
+			preparedStatement.executeUpdate();
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
 	public void registerLocation(String location) throws SQLException {

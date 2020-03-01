@@ -2,13 +2,10 @@ package application;
 	
 import javafx.application.Application;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import model.*;
 import view.*;
 import controller.*;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.input.MouseEvent;
 
 public class WeatherApplication extends Application {
 	
@@ -71,6 +68,14 @@ public class WeatherApplication extends Application {
 			weatherView.locationController.setLocation(weatherView.locationsList.get(i));
 			weatherView.locationController.saveLocation();
 		}
+		
+		
+		// load favourite location on launch
+		if (weatherView.database.checkFavouriteExists(weatherView)) {
+			weatherController.setSearchResult(weatherView.favouriteLocation);
+			weatherController.handle(null);
+		}
+		System.out.println(weatherView.favouriteLocation);
 	}
 	
 	public static void main(String[] args) {
