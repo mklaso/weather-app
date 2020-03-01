@@ -83,7 +83,6 @@ public class WeatherApplication extends Application {
 			weatherController.setSearchResult(weatherView.favouriteLocation);
 			weatherController.handle(null);
 		}
-		System.out.println(weatherView.favouriteLocation);
 	}
 	
 	public static void main(String[] args) {
