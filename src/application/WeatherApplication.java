@@ -6,6 +6,8 @@ import model.*;
 import view.*;
 import controller.*;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 public class WeatherApplication extends Application {
 	
@@ -43,7 +45,13 @@ public class WeatherApplication extends Application {
 		// STAGE
 		window.setScene(weatherScene);
 		window.setTitle("Weather Application");
-		window.setResizable(false); 
+		window.setResizable(false);
+		
+		// icon setup
+		ImageView iconImage = new ImageView();
+		weatherView.setImage(iconImage, "weatherIcon.png", 100, 100);
+		Image icon = iconImage.getImage();
+		window.getIcons().add(icon);
 
 		String macAddress = aoObtainer.getMACAddress();
 
