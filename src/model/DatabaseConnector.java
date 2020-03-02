@@ -12,7 +12,7 @@ public class DatabaseConnector {
 	public Connection connect() {
 		try {
 			Class.forName("org.sqlite.JDBC");
-			con = DriverManager.getConnection("jdbc:sqlite:InfoDb.db");
+			con = DriverManager.getConnection("jdbc:sqlite:src/resources/InfoDb.db");
 			return con;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
