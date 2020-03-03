@@ -448,29 +448,25 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 		}
 	}
 	
+	public void setForecastBox(VBox vbox) {
+		vbox.getChildren().clear();
+		this.setForecastVBox(vbox, this.dfs.getDay(), this.dfs.getDate(), this.dfs.getTemp(),
+				this.dfs.getWeather(), this.dfs.getWeather());
+	}
+	
 	public void updateForecastVBox(int number) {
 		
 		//updates forecast corresponding forecast box with relevant location data
 		if (number == 0) {
-			day1.getChildren().clear();
-			this.setForecastVBox(day1, this.dfs.getDay(), this.dfs.getDate(), this.dfs.getTemp(),
-					this.dfs.getWeather(), this.dfs.getWeather());
+			setForecastBox(day1);
 		} else if (number == 1) {
-			day2.getChildren().clear();
-			this.setForecastVBox(day2, this.dfs.getDay(), this.dfs.getDate(), this.dfs.getTemp(),
-					this.dfs.getWeather(), this.dfs.getWeather());
+			setForecastBox(day2);
 		} else if (number == 2) {
-			day3.getChildren().clear();
-			this.setForecastVBox(day3, this.dfs.getDay(), this.dfs.getDate(), this.dfs.getTemp(),
-					this.dfs.getWeather(), this.dfs.getWeather());
+			setForecastBox(day3);
 		} else if (number == 3) {
-			day4.getChildren().clear();
-			this.setForecastVBox(day4, this.dfs.getDay(), this.dfs.getDate(), this.dfs.getTemp(),
-					this.dfs.getWeather(), this.dfs.getWeather());
+			setForecastBox(day4);
 		} else if (number == 4) {
-			day5.getChildren().clear();
-			this.setForecastVBox(day5, this.dfs.getDay(), this.dfs.getDate(), this.dfs.getTemp(),
-					this.dfs.getWeather(), this.dfs.getWeather());
+			setForecastBox(day5);
 		}
 	}
 
@@ -480,15 +476,9 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 		this.setCurrentWeather();
 		
 		//for 5 day forecast
-		this.dfs.setForecastDay(1);
-		this.updateForecastVBox(this.dfs.getCurrentDay());
-		this.dfs.setForecastDay(2);
-		this.updateForecastVBox(this.dfs.getCurrentDay());
-		this.dfs.setForecastDay(3);
-		this.updateForecastVBox(this.dfs.getCurrentDay());
-		this.dfs.setForecastDay(4);
-		this.updateForecastVBox(this.dfs.getCurrentDay());
-		this.dfs.setForecastDay(5);
-		this.updateForecastVBox(this.dfs.getCurrentDay());
+		for (int i = 1; i <= 5; i++) {
+			this.dfs.setForecastDay(i);
+			this.updateForecastVBox(this.dfs.getCurrentDay());
+		}
 	}
 }
