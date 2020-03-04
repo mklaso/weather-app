@@ -35,9 +35,9 @@ public class DatabaseConnector {
 	//testing purposes
 	public void connectionStatus() {
 		if (this.isDbConnected()) {
-			System.out.println("Database is connected.");
+			System.out.println("Database is connected.\n");
 		} else {
-			System.out.println("Database is not connected.");
+			System.out.println("Database is not connected.\n");
 		}
 	}
 	
@@ -188,7 +188,7 @@ public class DatabaseConnector {
 				preparedStatement.setString(1, location);
 				preparedStatement.executeUpdate();
 			} else {
-				System.out.println("Max number of locations. Please delete one to add another.");
+				System.out.println("Max number of locations. Please remove one if you'd like to add another.\n");
 			}
 			
 			
@@ -229,6 +229,7 @@ public class DatabaseConnector {
 	}
 	
 	//logs in if the user exists
+	//testing purposes
 	public void login() {
 		AddressObtainer aoObtainer = new AddressObtainer();
 		try {

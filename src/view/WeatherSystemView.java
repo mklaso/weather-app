@@ -10,6 +10,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -65,6 +66,8 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 	public ArrayList<String> locationsList = new ArrayList<String>();
 	public SaveLocationController locationController = new SaveLocationController(this, locationField, searchButton);
 	public String favouriteLocation = "none";
+	VBox topVbox = new VBox();
+	HBox bottomHbox = new HBox();
 	public SetFavouriteController favouriteController = new SetFavouriteController(this, locationField);
 	
 	public void setLocationController(WeatherSystemView view, TextField text, Button b) {
@@ -150,11 +153,9 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 		setSize(mainVbox, 815, 715);
 		
 		//top vbox (current weather/search)
-		VBox topVbox = new VBox();
 		setSize(topVbox, 815, 495);
 		topVbox.setAlignment(Pos.CENTER);
-		topVbox.setStyle("-fx-background-color: "
-				+ "linear-gradient(from 25% 25% to 100% 100%, rgb(177, 249, 254), rgb(226, 166, 255));");
+		
 		
 		//inner hbox (inside topVbox - searching hbox)
 		HBox searchBox = new HBox(10);
@@ -266,12 +267,13 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 		minMaxFeelsTemp.setTranslateY(-10.0);
 
 		//bottom hbox (5day forecast)
-		HBox bottomHbox = new HBox();
+		//HBox bottomHbox = new HBox();
 		setSize(bottomHbox, 815, 220);
 		bottomHbox.setAlignment(Pos.CENTER);
-		bottomHbox.setStyle("-fx-background-color: "
-				+ " linear-gradient(to left, rgb(226, 166, 255), rgb(252, 222, 124));");
 		bottomHbox.setEffect(new DropShadow());
+		
+		//--------------------------------------------------------------------------------------------here
+
 		
 		//5 vbox setup to put inside forecast box
 		setForecastVBox(day1, "N/A", "N/A", "N/A", "N/A", "N/A");
@@ -328,7 +330,7 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 		HBox exitHbox = new HBox();
 		setSize(exitHbox, 200, 40);
 		exitHbox.setAlignment(Pos.TOP_RIGHT);
-		exitHbox.setStyle("-fx-border-color: grey;");
+		exitHbox.setStyle("-fx-border-color: black;");
 		
 		Label saved = new Label("Saved Locations");
 		saved.setPadding(new Insets(7, 21, 0, 0));
@@ -345,7 +347,7 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 		
 		AnchorPane.setTopAnchor(locationsBox, 5.0);
 		AnchorPane.setLeftAnchor(locationsBox, 5.0);
-		locationsBox.setStyle("-fx-background-color: beige; -fx-border-color: black");
+		locationsBox.setStyle("-fx-background-color: beige; -fx-border-color: black;");
 		locationsBox.setOpacity(0.97);
 		setSize(locationsBox, 200, 312);
 		locationsBox.setAlignment(Pos.TOP_CENTER);
@@ -479,6 +481,27 @@ public class WeatherSystemView extends AnchorPane implements Observer {
 		for (int i = 1; i <= 5; i++) {
 			this.dfs.setForecastDay(i);
 			this.updateForecastVBox(this.dfs.getCurrentDay());
+		}
+		
+		WeatherSystem ws = this.dfs.getWeatherSystem();
+		int localTime;
+		if (!ws.getLocation().equals("")) {
+			localTime = WeatherSystem.getTimeIn24Hr(ws.getLocalTime());
+			
+			int sunriseTime = WeatherSystem.getTimeIn24Hr(ws.getSunriseTime());
+			int sunsetTime = WeatherSystem.getTimeIn24Hr(ws.getSunsetTime());
+	
+			if (localTime >= sunriseTime && localTime < sunsetTime) { //sun
+				bottomHbox.setStyle("-fx-background-color: "
+						+ " linear-gradient(from 25% 25% to 100% 100%, rgb(135, 221, 254), rgb(217, 138, 255))");
+				topVbox.setStyle("-fx-background-color: "
+						+ " linear-gradient(from 25% 25% to 100% 100%, rgb(177, 249, 254), rgb(226, 166, 255));");
+			} else if (localTime >= sunsetTime || localTime <= sunriseTime) { //night
+				bottomHbox.setStyle("-fx-background-color: "
+						+ " linear-gradient(from 25% 25% to 100% 100%, rgb(156, 124, 205), rgb(92, 92, 92))");
+				topVbox.setStyle("-fx-background-color: "
+						+ " linear-gradient(from 25% 25% to 100% 100%, rgb(190, 169, 222), rgb(84, 107, 171))");
+			}
 		}
 	}
 }

@@ -60,12 +60,12 @@ public class WeatherApplication extends Application {
 		
 		//database stuff
 		weatherView.database.connect();
-		weatherView.database.connectionStatus();
-		weatherView.database.login();
+		//weatherView.database.connectionStatus();
+		//weatherView.database.login();
 		
 		if (!weatherView.database.isRegistered(macAddress)) {
 			weatherView.database.registerUser(macAddress);
-			System.out.println("User registered!");
+			//System.out.println("User registered!");
 		}
 		
 		//load database locations for user
@@ -83,6 +83,7 @@ public class WeatherApplication extends Application {
 			weatherController.setSearchResult(weatherView.favouriteLocation);
 			weatherController.handle(null);
 		}
+		weatherView.update(null);
 	}
 	
 	public static void main(String[] args) {

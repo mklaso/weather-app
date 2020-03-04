@@ -18,10 +18,16 @@ public class SetFavouriteController implements EventHandler<ActionEvent> {
 	@Override
 	public void handle(ActionEvent arg0) {
 		
+		String newFavourite = searchResult.getText();
+
 		// sets favourite location in application and database
-		String location = searchResult.getText();
-		this.view.database.setFavouriteLocation(location);
-		System.out.println("Favourite location updated!");
-		
+		if (!view.favouriteLocation.equals(newFavourite)) {
+			this.view.database.setFavouriteLocation(newFavourite);
+			System.out.println(newFavourite + " has been set as your favourite location."
+					+ " \nWeather results for " + newFavourite +" will be automatically "
+							+ "displayed on application launch.\n");
+		} else {
+			System.out.println(view.favouriteLocation + " is already your favourite location!\n");
+		}
 	}
 }

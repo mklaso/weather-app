@@ -11,6 +11,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import view.StyleSetter;
@@ -23,6 +25,8 @@ public class SaveLocationController implements EventHandler<MouseEvent>{
 	private Button searchButton;
 	private WeatherSystemView view;
 	public String deletedString = "nothing";
+	private final ColumnConstraints c1Constraint = new ColumnConstraints(159);
+	private final ColumnConstraints c2Constraint = new ColumnConstraints(39);
 	
 	public SaveLocationController(WeatherSystemView view, TextField searchedLocation, 
 			Button searchButton) {
@@ -42,7 +46,7 @@ public class SaveLocationController implements EventHandler<MouseEvent>{
 	
 	public boolean isLocationAlreadySaved(Label locationToAdd) {
 		for (Node location: this.savedLocations.getChildren()) {
-			HBox holder = (HBox) location;
+			GridPane holder = (GridPane) location;
 			HBox locationBox = (HBox) holder.getChildren().get(0);
    	 		Label savedLocation = (Label) locationBox.getChildren().get(1);
    	 		if (savedLocation.getText().toLowerCase().equals(locationToAdd.getText().toLowerCase())) {
@@ -52,13 +56,13 @@ public class SaveLocationController implements EventHandler<MouseEvent>{
 		return false;
 	}
 	
-	//testing
+	//stores string locations from the gridpanes
 	public ArrayList<String> boxList = new ArrayList<String>();
 	
 	public void saveLocation() {
 		
 		for (Node location: this.savedLocations.getChildren()) {
-			HBox holder = (HBox) location;
+			GridPane holder = (GridPane) location;
 			HBox locationBox = (HBox) holder.getChildren().get(0);
    	 		Label savedLocation = (Label) locationBox.getChildren().get(1);
    	 		
@@ -71,7 +75,7 @@ public class SaveLocationController implements EventHandler<MouseEvent>{
 		
 		Label locationToSave = new Label();
 		HBox saved = new HBox(3);
-		HBox holder = new HBox(10);
+		GridPane holder = new GridPane();
 		HBox deleteBox = new HBox();
 		deleteBox.setAlignment(Pos.CENTER_RIGHT);
 
@@ -117,9 +121,13 @@ public class SaveLocationController implements EventHandler<MouseEvent>{
 			    	 searchedLocation.setText((locationToSave.getText()));
 			     }
 			});
+	   	 	
 	   	 	deleteBox.getChildren().add(deleteLocation);
 	   	 	saved.getChildren().addAll(pinpointImage, locationToSave);
-	   	 	holder.getChildren().addAll(saved, deleteBox);
+	   	 	holder.add(saved, 0, 0);
+	   	 	holder.add(deleteBox, 1, 0);
+	   	 	holder.getColumnConstraints().add(c1Constraint);
+	   	 	holder.getColumnConstraints().add(c2Constraint);
 	   	 	this.savedLocations.getChildren().add(holder);
    	 	}
 	}
@@ -129,8 +137,8 @@ public class SaveLocationController implements EventHandler<MouseEvent>{
 	}
 	
 	public void remove(String deletedLocation) {
-		this.view.database.removeLocation(this.view.locationsList, deletedLocation);
-   	 	System.out.println(deletedLocation + " has been removed.");
+		this.view.database.removeLocation(this.view.locationsList, deletedLocation); //removes from database
+   	 	System.out.println(deletedLocation + " has been removed from the locations list.\n");
 	}
 	
 	@Override
@@ -139,7 +147,7 @@ public class SaveLocationController implements EventHandler<MouseEvent>{
 		boolean searchOccurred = this.view.dfs.hasSearchOccurred;
 		Label locationToSave = new Label();
 		HBox saved = new HBox(3);
-		HBox holder = new HBox(10);
+		GridPane holder = new GridPane();
 		HBox deleteBox = new HBox();
 		deleteBox.setAlignment(Pos.CENTER_RIGHT);
 
@@ -186,18 +194,21 @@ public class SaveLocationController implements EventHandler<MouseEvent>{
 			});
 	   	 	deleteBox.getChildren().add(deleteLocation);
 	   	 	saved.getChildren().addAll(pinpointImage, locationToSave);
-	   	 	holder.getChildren().addAll(saved, deleteBox);
+	   	 	holder.add(saved, 0, 0);
+	   	 	holder.add(deleteBox, 1, 0);
+	   	 	holder.getColumnConstraints().add(c1Constraint);
+	   	 	holder.getColumnConstraints().add(c2Constraint); 
 	   	 	this.savedLocations.getChildren().add(holder);
+	   	 	
 	   	 	try {
 				this.view.database.registerLocation(searchedLocation.getText());
-				System.out.println(searchedLocation.getText());
-				System.out.println("location has been registered");
+				System.out.println(searchedLocation.getText() + " has been added to the locations list.\n");
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
    	 	} else {
-   	 		System.out.println("Location is either already saved or invalid.");
+   	 		System.out.println("The location has already been registered OR the search result was deemed invalid.\n");
    	 	}
 	}
 }
