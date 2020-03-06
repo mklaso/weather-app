@@ -201,7 +201,7 @@ public class DatabaseConnector {
 		}
 	}
 	
-	public void removeLocation(ArrayList<String> locationsList, String locationToDelete) {
+	public void removeLocation(ArrayList<String> locationsList, String locationToDelete) throws SQLException {
 		PreparedStatement preparedStatement = null;
 		boolean exists = false;
 		
@@ -222,6 +222,8 @@ public class DatabaseConnector {
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			} finally {
+				preparedStatement.close();
 			}
 		} else {
 			System.out.println("Error - Trying to remove a location that does not exist.");

@@ -137,7 +137,13 @@ public class SaveLocationController implements EventHandler<MouseEvent>{
 	}
 	
 	public void remove(String deletedLocation) {
-		this.view.database.removeLocation(this.view.locationsList, deletedLocation); //removes from database
+		try {
+			this.view.database.removeLocation(this.view.locationsList, deletedLocation);
+			this.view.locationsList.remove(deletedLocation);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} //removes from database
    	 	System.out.println(deletedLocation + " has been removed from the locations list.\n");
 	}
 	
@@ -202,6 +208,7 @@ public class SaveLocationController implements EventHandler<MouseEvent>{
 	   	 	
 	   	 	try {
 				this.view.database.registerLocation(searchedLocation.getText());
+				this.view.locationsList.add(searchedLocation.getText());
 				System.out.println(searchedLocation.getText() + " has been added to the locations list.\n");
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
