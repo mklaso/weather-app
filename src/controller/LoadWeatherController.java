@@ -1,5 +1,7 @@
 package controller;
 
+import java.util.regex.Pattern;
+
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.TextField;
@@ -24,10 +26,10 @@ public class LoadWeatherController implements EventHandler<ActionEvent> {
 	@Override
 	public void handle(ActionEvent event) {
 		
-		
+		Pattern containsNumbers = Pattern.compile("^.*([0-9]).*$");
 		String location = searchResult.getText();
 		
-		if (!location.equals("")) {
+		if (!location.equals("") && !containsNumbers.matcher(location).matches()) {
 			WeatherSystem ws = this.dfs.getWeatherSystem();
 			
 			ws.setLocation(location);

@@ -202,31 +202,51 @@ public class DatabaseConnector {
 	}
 	
 	public void removeLocation(ArrayList<String> locationsList, String locationToDelete) throws SQLException {
+		
 		PreparedStatement preparedStatement = null;
-		boolean exists = false;
+		PreparedStatement ps2 = null;
+		ResultSet resultSet;
+		String query = "select * from table_user_info";
+		int locationCounter = 2;
+		boolean found = false;
 		
 		int i;
-		for (i = 0; i < locationsList.size(); i++) {
-			if (locationsList.get(i).toLowerCase().equals(locationToDelete.toLowerCase())) {
-				exists = true;
-				break;
+		try {
+			ps2 = con.prepareStatement(query);
+			resultSet = ps2.executeQuery();
+			
+			if (resultSet.next()) {
+				for (i = locationCounter; i <= 11; i++) {
+					
+					// looks for location to be deleted
+					if (resultSet.getString(i).toLowerCase().equals(locationToDelete.toLowerCase())) {
+						found = true;
+						locationCounter = i-1;
+						break;
+					}
+				}
 			}
-		}
-		i++;
+
+			if (found) {
+				String sql = "UPDATE table_user_info SET Location" + locationCounter + " = NULL";
+				try {
+					preparedStatement = con.prepareStatement(sql);
+					preparedStatement.executeUpdate();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} finally {
+					preparedStatement.close();
+				}
+			} else {
+				//testing purposes
+				System.out.println("Error - Location does not exist within database.");
+			}
 		
-		if (exists) {
-			String sql = "UPDATE table_user_info SET Location" + i + " = NULL";
-			try {
-				preparedStatement = con.prepareStatement(sql);
-				preparedStatement.executeUpdate();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} finally {
-				preparedStatement.close();
-			}
-		} else {
-			System.out.println("Error - Trying to remove a location that does not exist.");
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		} finally {
+			preparedStatement.close();
 		}
 	}
 	
