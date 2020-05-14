@@ -207,7 +207,7 @@ public class DatabaseConnector {
 		PreparedStatement ps2 = null;
 		ResultSet resultSet;
 		String query = "select * from table_user_info";
-		int locationCounter = 2;
+		int locationCounter = 1;
 		boolean found = false;
 		
 		int i;
@@ -215,14 +215,18 @@ public class DatabaseConnector {
 			ps2 = con.prepareStatement(query);
 			resultSet = ps2.executeQuery();
 			
+			
 			if (resultSet.next()) {
 				for (i = locationCounter; i <= 11; i++) {
 					
+					// only if location exists
+					if (resultSet.getString(i) != null) {
 					// looks for location to be deleted
-					if (resultSet.getString(i).toLowerCase().equals(locationToDelete.toLowerCase())) {
-						found = true;
-						locationCounter = i-1;
-						break;
+						if (resultSet.getString(i).toLowerCase().equals(locationToDelete.toLowerCase())) {
+							found = true;
+							locationCounter = i-1;
+							break;
+						}
 					}
 				}
 			}

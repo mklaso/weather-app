@@ -63,6 +63,7 @@ public class SaveLocationController implements EventHandler<MouseEvent>{
 	
 	public void remove(String deletedLocation) {
 		try {
+			System.out.println(this.view.locationsList);
 			this.view.database.removeLocation(this.view.locationsList, deletedLocation);
 			this.view.locationsList.remove(deletedLocation);
 		} catch (SQLException e) {
